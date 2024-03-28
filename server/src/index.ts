@@ -7,6 +7,7 @@ import { connectDB } from './config/db'
 import { COOKIE_NAME, REDIS_PREFIX, __prod__ } from './constants'
 import { errorHandler, notFound } from './middleware/errorMiddleware'
 import userRoutes from './routes/userRoutes'
+import postRoutes from './routes/postRoutes'
 
 const PORT = process.env.PORT || 3000
 
@@ -45,6 +46,7 @@ app.use(
 app.use(express.json())
 
 app.use('/api/users', userRoutes)
+app.use('/api/posts', postRoutes)
 
 app.use(notFound)
 app.use(errorHandler)
