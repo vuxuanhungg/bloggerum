@@ -5,13 +5,9 @@ import Post from '../models/postModel'
 // @route   GET /api/posts
 // @access  Public
 export const getPosts = asyncHandler(async (req, res) => {
-    let posts
     const { userId } = req.query
-    if (!userId) {
-        posts = await Post.find()
-    } else {
-        posts = await Post.find({ userId: userId.toString() })
-    }
+    const filter = userId ? { userId: userId.toString() } : {}
+    const posts = await Post.find(filter)
     res.json(posts)
 })
 
