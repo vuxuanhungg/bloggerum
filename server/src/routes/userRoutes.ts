@@ -6,7 +6,7 @@ import {
     getUserProfile,
     updateUserProfile,
 } from '../controllers/userControllers'
-import { protect } from '../middleware/authMiddleware'
+import { getUser, isAuth } from '../middleware/authMiddleware'
 
 const router = express.Router()
 
@@ -15,7 +15,7 @@ router.post('/login', loginUser)
 router.post('/logout', logoutUser)
 router
     .route('/profile')
-    .get(protect, getUserProfile)
-    .put(protect, updateUserProfile)
+    .get(isAuth, getUser, getUserProfile)
+    .put(isAuth, getUser, updateUserProfile)
 
 export default router

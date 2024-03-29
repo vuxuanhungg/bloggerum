@@ -6,14 +6,15 @@ import {
     getPosts,
     updatePost,
 } from '../controllers/postController'
-import { protect } from '../middleware/authMiddleware'
+import { getUser, isAuth } from '../middleware/authMiddleware'
 
 const router = express.Router()
 
-router.get('/', getPosts)
-router.get('/:id', getPost)
-router.post('/', protect, createPost)
-router.put('/:id', protect, updatePost)
-router.delete('/:id', protect, deletePost)
+router.route('/').get(getPosts).post(isAuth, getUser, createPost)
+router
+    .route('/:id')
+    .get(getPost)
+    .put(isAuth, getUser, updatePost)
+    .delete(isAuth, getUser, deletePost)
 
 export default router

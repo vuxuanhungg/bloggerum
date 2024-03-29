@@ -66,12 +66,7 @@ export const logoutUser = asyncHandler(async (req, res, next) => {
 // @route   GET /api/users/profile
 // @access  Private
 export const getUserProfile = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.session.userId)
-
-    if (!user) {
-        res.status(404)
-        throw new Error('User not found')
-    }
+    const user = req.user!
 
     res.json({
         _id: user._id,
@@ -84,12 +79,7 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 // @route   PUT /api/users/profile
 // @access  Private
 export const updateUserProfile = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.session.userId)
-
-    if (!user) {
-        res.status(404)
-        throw new Error('User not found')
-    }
+    const user = req.user!
 
     user.name = req.body.name || user.name
     user.email = req.body.email || user.email

@@ -1,6 +1,5 @@
 import asyncHandler from 'express-async-handler'
 import Post from '../models/postModel'
-import User from '../models/userModel'
 
 // @desc    Get all posts
 // @route   GET /api/posts
@@ -47,12 +46,6 @@ export const updatePost = asyncHandler(async (req, res) => {
         throw new Error('Post not found')
     }
 
-    const user = await User.findById(req.session.userId)
-    if (!user) {
-        res.status(404)
-        throw new Error('User not found')
-    }
-
     // Make sure one cannot update other's post
     if (post.userId.toString() !== req.session.userId) {
         res.status(401)
@@ -75,12 +68,6 @@ export const deletePost = asyncHandler(async (req, res) => {
     if (!post) {
         res.status(404)
         throw new Error('Post not found')
-    }
-
-    const user = await User.findById(req.session.userId)
-    if (!user) {
-        res.status(404)
-        throw new Error('User not found')
     }
 
     // Make sure one cannot update other's post
