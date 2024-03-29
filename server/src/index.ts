@@ -8,6 +8,7 @@ import { COOKIE_NAME, REDIS_PREFIX, __prod__ } from './constants'
 import { errorHandler, notFound } from './middleware/errorMiddleware'
 import userRoutes from './routes/userRoutes'
 import postRoutes from './routes/postRoutes'
+import tagRoutes from './routes/tagRoutes'
 
 const PORT = process.env.PORT || 3000
 
@@ -47,6 +48,7 @@ app.use(express.json())
 
 app.use('/api/users', userRoutes)
 app.use('/api/posts', postRoutes)
+app.use('/api/tags', tagRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

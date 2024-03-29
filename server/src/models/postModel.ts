@@ -4,6 +4,7 @@ interface IPost {
     title: string
     body: string
     userId: Types.ObjectId
+    tags: Types.ObjectId[]
 }
 
 const postSchema = new Schema<IPost>(
@@ -21,6 +22,12 @@ const postSchema = new Schema<IPost>(
             required: true,
             ref: 'User',
         },
+        tags: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Tag',
+            },
+        ],
     },
     {
         timestamps: true,

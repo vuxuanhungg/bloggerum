@@ -5,9 +5,11 @@ import Post from '../models/postModel'
 // @route   GET /api/posts
 // @access  Public
 export const getPosts = asyncHandler(async (req, res) => {
-    const { userId } = req.query
-    const filter = userId ? { userId: userId.toString() } : {}
-    const posts = await Post.find(filter)
+    const { userId, tag } = req.query
+    const filterByUser = userId ? { userId: userId.toString() } : {}
+    const filterByTag = tag ? { tags: tag.toString() } : {}
+    const filters = { ...filterByUser, ...filterByTag }
+    const posts = await Post.find(filters)
     res.json(posts)
 })
 
@@ -27,8 +29,13 @@ export const getPost = asyncHandler(async (req, res) => {
 // @route   POST /api/posts/
 // @access  Private
 export const createPost = asyncHandler(async (req, res) => {
-    const { title, body } = req.body
-    const goal = await Post.create({ title, body, userId: req.session.userId })
+    const { title, body, tags } = req.body
+    const goal = await Post.create({
+        title,
+        body,
+        userId: req.session.userId,
+        tags,
+    })
     res.status(201).json(goal)
 })
 
@@ -50,6 +57,7 @@ export const updatePost = asyncHandler(async (req, res) => {
 
     post.title = req.body.title || post.title
     post.body = req.body.body || post.body
+    post.tags = req.body.tags || post.tags
 
     const updatedPost = await post.save()
 
