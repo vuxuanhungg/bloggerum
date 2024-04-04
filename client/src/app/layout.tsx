@@ -1,5 +1,6 @@
 import { Inter } from 'next/font/google'
 import { ToastContainer } from 'react-toastify'
+import { AuthProvider } from './context/AuthContext'
 import Header from './components/Header'
 import 'react-toastify/dist/ReactToastify.css'
 import './globals.css'
@@ -13,11 +14,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <body className={inter.className}>
-                <Header />
-                {children}
-                <ToastContainer />
-            </body>
+            <AuthProvider>
+                <body className={inter.className}>
+                    <Header />
+                    {children}
+                    <ToastContainer />
+                </body>
+            </AuthProvider>
         </html>
     )
 }

@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { useAuthContext } from '../context/AuthContext'
 
 type Inputs = {
     name: string
@@ -14,6 +15,7 @@ type Inputs = {
 
 const Register = () => {
     const router = useRouter()
+    const { setUser } = useAuthContext()
     const {
         register,
         watch,
@@ -36,7 +38,7 @@ const Register = () => {
         }
 
         const user = await res.json()
-        console.log(user)
+        setUser(user)
         router.replace('/')
     })
 
