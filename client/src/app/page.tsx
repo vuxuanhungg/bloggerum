@@ -109,7 +109,7 @@ export default async function Home({
         await res.json()
 
     return (
-        <div className="container">
+        <div className="container my-8">
             <section className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
                 {posts.map((post) => (
                     <Post key={post._id} post={post} />

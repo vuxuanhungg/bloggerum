@@ -2,6 +2,7 @@ import RedisStore from 'connect-redis'
 import 'dotenv/config'
 import express from 'express'
 import session from 'express-session'
+import cors from 'cors'
 import { createClient } from 'redis'
 import { connectDB } from './config/db'
 import { COOKIE_NAME, REDIS_PREFIX, __prod__ } from './constants'
@@ -45,6 +46,12 @@ app.use(
 )
 
 app.use(express.json())
+app.use(
+    cors({
+        origin: 'http://localhost:3000',
+        credentials: true,
+    })
+)
 
 app.use('/api/users', userRoutes)
 app.use('/api/posts', postRoutes)
