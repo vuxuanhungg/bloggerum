@@ -21,9 +21,92 @@ const Post = ({ post }: { post: PostProps }) => {
     )
 }
 
-export default async function Home() {
-    const res = await fetch('http://localhost:8080/api/posts')
-    const posts: PostProps[] = await res.json()
+const Pagination = ({
+    totalPages,
+    currentPage,
+    perPage,
+}: {
+    totalPages: number
+    currentPage: number
+    perPage: number
+}) => {
+    return (
+        <nav className="mx-auto mt-8">
+            <ul className="flex items-center justify-center gap-1">
+                <li
+                    className={
+                        currentPage === 1
+                            ? 'pointer-events-none cursor-not-allowed'
+                            : ''
+                    }
+                >
+                    <Link
+                        href={`/?page=1&per_page=${perPage}`}
+                        className="rounded border border-slate-400 px-4 py-2"
+                    >
+                        First
+                    </Link>
+                </li>
+                <li
+                    className={
+                        currentPage === 1
+                            ? 'pointer-events-none cursor-not-allowed'
+                            : ''
+                    }
+                >
+                    <Link
+                        href={`/?page=${currentPage - 1}&per_page=${perPage}`}
+                        className="rounded border border-slate-400 px-4 py-2"
+                    >
+                        Prev
+                    </Link>
+                </li>
+                <li
+                    className={
+                        currentPage === totalPages
+                            ? 'pointer-events-none cursor-not-allowed'
+                            : ''
+                    }
+                >
+                    <Link
+                        href={`/?page=${currentPage + 1}&per_page=${perPage}`}
+                        className="rounded border border-slate-400 px-4 py-2"
+                    >
+                        Next
+                    </Link>
+                </li>
+                <li
+                    className={
+                        currentPage === totalPages
+                            ? 'pointer-events-none cursor-not-allowed'
+                            : ''
+                    }
+                >
+                    <Link
+                        href={`/?page=${totalPages}&per_page=${perPage}`}
+                        className="rounded border border-slate-400 px-4 py-2"
+                    >
+                        Last
+                    </Link>
+                </li>
+            </ul>
+        </nav>
+    )
+}
+
+export default async function Home({
+    searchParams,
+}: {
+    searchParams: { page: string; per_page: string }
+}) {
+    const page = Number(searchParams.page) || 1
+    const perPage = Number(searchParams.per_page) || 10
+
+    const res = await fetch(
+        `http://localhost:8080/api/posts?page=${page}&limit=${perPage}`
+    )
+    const { posts, totalPages }: { posts: PostProps[]; totalPages: number } =
+        await res.json()
 
     return (
         <div className="container">
@@ -32,6 +115,11 @@ export default async function Home() {
                     <Post key={post._id} post={post} />
                 ))}
             </section>
+            <Pagination
+                totalPages={totalPages}
+                currentPage={page}
+                perPage={perPage}
+            />
         </div>
     )
 }

@@ -9,8 +9,13 @@ export const getPosts = asyncHandler(async (req, res) => {
     const filterByUser = userId ? { userId: userId.toString() } : {}
     const filterByTag = tag ? { tags: tag.toString() } : {}
     const filters = { ...filterByUser, ...filterByTag }
-    const posts = await Post.find(filters)
-    res.json(posts)
+
+    const page = Number(req.query.page)
+    const limit = Number(req.query.limit)
+    const skip = (page - 1) * limit
+    const posts = await Post.find(filters).skip(skip).limit(limit)
+    const count = await Post.countDocuments()
+    res.json({ posts, totalPages: Math.ceil(count / limit) })
 })
 
 // @desc    Get a post
