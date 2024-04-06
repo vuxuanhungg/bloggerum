@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import Link from 'next/link'
 import { PostProps } from '~/app/types'
 
 const DetailPost = async ({ params }: { params: { id: string } }) => {
@@ -11,9 +12,16 @@ const DetailPost = async ({ params }: { params: { id: string } }) => {
                 {post.title}
             </h1>
             <div className="mt-4 flex items-center justify-center gap-4">
-                <div className="h-9 w-9 rounded-full bg-green-500"></div>
+                <Link href={`/user/${post.user._id}`}>
+                    <div className="h-9 w-9 rounded-full bg-green-500"></div>
+                </Link>
                 <div>
-                    <h3>Xuan Hung</h3>
+                    <Link
+                        href={`/user/${post.user._id}`}
+                        className="hover:underline"
+                    >
+                        <h3>{post.user.name}</h3>
+                    </Link>
                     <p className="text-sm text-slate-500">
                         {format(new Date(post.createdAt), 'MMMM dd, yyyy')}
                     </p>

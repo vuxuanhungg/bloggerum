@@ -1,4 +1,5 @@
 'use client'
+import { UserProps } from '../types'
 
 import {
     Dispatch,
@@ -10,16 +11,10 @@ import {
     useState,
 } from 'react'
 
-type User = {
-    _id: string
-    name: string
-    email: string
-}
-
 type AuthContextValue = {
     isLoading: boolean
-    user: User | null
-    setUser: Dispatch<SetStateAction<User | null>>
+    user: UserProps | null
+    setUser: Dispatch<SetStateAction<UserProps | null>>
 }
 
 export const AuthContext = createContext<AuthContextValue | null>(null)
