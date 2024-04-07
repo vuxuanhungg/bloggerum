@@ -27,8 +27,10 @@ export const getPosts = asyncHandler(async (req, res) => {
 // @route   GET /api/posts/:id
 // @access  Public
 export const getPost = asyncHandler(async (req, res) => {
-    const _id = new mongoose.Types.ObjectId(req.params.id)
     const result = await Post.aggregate([
+        {
+            $match: { _id: new mongoose.Types.ObjectId(req.params.id) },
+        },
         {
             $lookup: {
                 from: 'users',
@@ -38,29 +40,30 @@ export const getPost = asyncHandler(async (req, res) => {
             },
         },
         {
-            $match: { _id },
+            $addFields: {
+                user: {
+                    $first: '$user',
+                },
+            },
+        },
+        {
+            $project: {
+                title: 1,
+                body: 1,
+                user: {
+                    _id: 1,
+                    name: 1,
+                },
+                updatedAt: 1,
+            },
         },
     ])
 
     if (result.length === 0) {
-        res.status(404)
         throw new Error('Post not found')
     }
 
-    const { title, body, userId, tags, createdAt, updatedAt } = result[0]
-    const post = {
-        _id,
-        title,
-        body,
-        tags,
-        user: {
-            _id: userId,
-            name: result[0].user[0].name,
-        },
-        createdAt,
-        updatedAt,
-    }
-    res.json(post)
+    res.json(result[0])
 })
 
 // @desc    Create a post
