@@ -19,9 +19,9 @@ export default async function Home({
     return (
         <div className="container my-8">
             <section className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-                {posts.map((post) => (
-                    <Post key={post._id} post={post} />
-                ))}
+                {totalPages === 0 && <div>No posts yet</div>}
+                {totalPages > 0 &&
+                    posts.map((post) => <Post key={post._id} post={post} />)}
             </section>
             <Pagination {...{ totalPages, currentPage, perPage }} />
         </div>

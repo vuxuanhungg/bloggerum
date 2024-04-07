@@ -2,25 +2,94 @@ import asyncHandler from 'express-async-handler'
 import Post from '../models/postModel'
 import mongoose from 'mongoose'
 
+// Mongoose does not auto cast string to ObjectId if we use `aggregate()`
+const { ObjectId } = mongoose.Types
+
 // @desc    Get all posts
 // @route   GET /api/posts
 // @access  Public
 export const getPosts = asyncHandler(async (req, res) => {
     const { userId, tag } = req.query
-    const filterByUser = userId ? { userId: userId.toString() } : {}
-    const filterByTag = tag ? { tags: tag.toString() } : {}
-    const filters = { ...filterByUser, ...filterByTag }
-
     const page = Number(req.query.page) || 1
     const limit = Number(req.query.limit) || 10
     const skip = (page - 1) * limit
-    const posts = await Post.find(filters)
-        .skip(skip)
-        .limit(limit)
-        .sort({ updatedAt: 'desc' })
-    // FIXME: duplicate query
-    const count = await Post.find(filters).countDocuments()
-    res.json({ posts, totalPages: Math.ceil(count / limit) })
+
+    const queryByUser = userId
+        ? { userId: new ObjectId(userId.toString()) }
+        : {}
+    const queryByTag = tag
+        ? {
+              tags: new ObjectId(tag.toString()),
+          }
+        : {}
+    const query = { ...queryByUser, ...queryByTag }
+
+    const result = await Post.aggregate([
+        { $match: query },
+        {
+            $sort: { updatedAt: -1 },
+        },
+        {
+            // $facet allows multi aggregation: "posts" and "count"
+            $facet: {
+                posts: [
+                    {
+                        // join users collection with posts
+                        $lookup: {
+                            from: 'users',
+                            localField: 'userId',
+                            foreignField: '_id',
+                            as: 'user',
+                        },
+                    },
+                    {
+                        // prettify the result: make the "user" field an object instead of an array with one object
+                        $addFields: {
+                            user: {
+                                $first: '$user',
+                            },
+                        },
+                    },
+                    {
+                        $project: {
+                            title: 1,
+                            body: 1,
+                            user: {
+                                _id: 1,
+                                name: 1,
+                            },
+                            tags: 1,
+                            updatedAt: 1,
+                        },
+                    },
+                    { $skip: skip },
+                    { $limit: limit },
+                ],
+                count: [
+                    {
+                        $count: 'count',
+                    },
+                ],
+            },
+        },
+        {
+            $project: {
+                posts: 1,
+                totalPages: {
+                    $ifNull: [
+                        {
+                            $ceil: {
+                                $divide: [{ $first: '$count.count' }, limit],
+                            },
+                        },
+                        0,
+                    ],
+                },
+            },
+        },
+    ])
+
+    res.json(result[0])
 })
 
 // @desc    Get a post
@@ -29,7 +98,7 @@ export const getPosts = asyncHandler(async (req, res) => {
 export const getPost = asyncHandler(async (req, res) => {
     const result = await Post.aggregate([
         {
-            $match: { _id: new mongoose.Types.ObjectId(req.params.id) },
+            $match: { _id: new ObjectId(req.params.id) },
         },
         {
             $lookup: {

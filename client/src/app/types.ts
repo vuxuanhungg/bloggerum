@@ -7,7 +7,6 @@ export type PostProps = {
         name: string
     }
     tags: string[]
-    createdAt: string
     updatedAt: string
 }
 

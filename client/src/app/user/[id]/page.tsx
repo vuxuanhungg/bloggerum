@@ -22,7 +22,8 @@ const UserPosts = async ({
         <div className="container my-8">
             <Actions userId={params.id} />
             <div className="mt-8">
-                {posts.length > 0 && (
+                {totalPages === 0 && <div>No posts yet</div>}
+                {totalPages > 0 && (
                     <>
                         <section className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
                             {posts.map((post) => (
@@ -36,7 +37,6 @@ const UserPosts = async ({
                         />
                     </>
                 )}
-                {posts.length === 0 && <div>No posts yet</div>}
             </div>
         </div>
     )
