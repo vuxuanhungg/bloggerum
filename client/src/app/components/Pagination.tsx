@@ -42,7 +42,7 @@ const Pagination = ({
                     }
                 >
                     <Link
-                        href={`${pathname}${updateSearchParams({ page: currentPage, per_page: perPage })}`}
+                        href={`${pathname}${updateSearchParams({ page: null, per_page: perPage })}`}
                         className="rounded border border-slate-400 px-4 py-2"
                     >
                         First
