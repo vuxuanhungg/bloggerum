@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler'
-import Post from '../models/postModel'
 import mongoose from 'mongoose'
+import Post from '../models/postModel'
 
 // Mongoose does not auto cast string to ObjectId if we use `aggregate()`
 const { ObjectId } = mongoose.Types

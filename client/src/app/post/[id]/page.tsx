@@ -23,7 +23,7 @@ const DetailPost = async ({ params }: { params: { id: string } }) => {
                         <h3>{post.user.name}</h3>
                     </Link>
                     <p className="text-sm text-slate-500">
-                        {format(new Date(post.createdAt), 'MMMM dd, yyyy')}
+                        {format(new Date(post.updatedAt), 'MMMM dd, yyyy')}
                     </p>
                 </div>
             </div>
