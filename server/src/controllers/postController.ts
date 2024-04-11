@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler'
 import mongoose from 'mongoose'
 import Post from '../models/postModel'
+import Tag from '../models/tagModel'
 
 // Mongoose does not auto cast string to ObjectId if we use `aggregate()`
 const { ObjectId } = mongoose.Types
@@ -139,7 +140,21 @@ export const getPost = asyncHandler(async (req, res) => {
 // @route   POST /api/posts/
 // @access  Private
 export const createPost = asyncHandler(async (req, res) => {
-    const { title, body, tags } = req.body
+    const {
+        title,
+        body,
+        tags,
+    }: { title: string; body: string; tags: string[] } = req.body
+
+    if (tags) {
+        tags.map((tag) => tag.toLowerCase()).forEach(async (tag) => {
+            const tagExists = await Tag.findOne({ name: tag })
+            if (!tagExists) {
+                await Tag.create({ name: tag })
+            }
+        })
+    }
+
     const post = await Post.create({
         title,
         body,

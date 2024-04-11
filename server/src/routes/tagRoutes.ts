@@ -1,9 +1,8 @@
 import express from 'express'
-import { createTag, getTags } from '../controllers/tagController'
-import { getUser, isAuth } from '../middleware/authMiddleware'
+import { getTags } from '../controllers/tagController'
 
 const router = express.Router()
 
-router.route('/').get(getTags).post(isAuth, getUser, createTag)
+router.route('/').get(getTags)
 
 export default router
