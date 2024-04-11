@@ -5,13 +5,14 @@ import { PostProps } from './types'
 export default async function Home({
     searchParams,
 }: {
-    searchParams: { page: string; per_page: string }
+    searchParams: { tag: string; page: string; per_page: string }
 }) {
+    const tag = searchParams.tag
     const currentPage = Number(searchParams.page) || 1
     const perPage = Number(searchParams.per_page)
 
     const res = await fetch(
-        `http://localhost:8080/api/posts?${currentPage > 1 ? `page=${currentPage}` : ''}&${perPage ? `limit=${perPage}` : ''}`
+        `http://localhost:8080/api/posts?${tag ? `tag=${tag}` : ''}${currentPage > 1 ? `page=${currentPage}` : ''}&${perPage ? `limit=${perPage}` : ''}`
     )
     const { posts, totalPages }: { posts: PostProps[]; totalPages: number } =
         await res.json()

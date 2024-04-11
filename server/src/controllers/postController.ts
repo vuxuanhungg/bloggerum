@@ -20,7 +20,7 @@ export const getPosts = asyncHandler(async (req, res) => {
         : {}
     const queryByTag = tag
         ? {
-              tags: new ObjectId(tag.toString()),
+              tags: tag.toString(),
           }
         : {}
     const query = { ...queryByUser, ...queryByTag }
@@ -124,6 +124,7 @@ export const getPost = asyncHandler(async (req, res) => {
                     _id: 1,
                     name: 1,
                 },
+                tags: 1,
                 updatedAt: 1,
             },
         },
