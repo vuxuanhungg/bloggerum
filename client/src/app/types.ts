@@ -2,6 +2,7 @@ export type PostProps = {
     _id: string
     title: string
     body: string
+    thumbnail: string
     user: {
         _id: string
         name: string

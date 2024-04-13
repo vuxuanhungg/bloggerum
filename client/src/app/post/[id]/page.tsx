@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import Image from 'next/image'
 import Link from 'next/link'
 import { PostProps } from '~/app/types'
 
@@ -27,7 +28,9 @@ const DetailPost = async ({ params }: { params: { id: string } }) => {
                     </p>
                 </div>
             </div>
-            <div className="mx-auto mt-8 aspect-video max-w-4xl bg-slate-500 lg:rounded-lg"></div>
+            <div className="mx-auto mt-8 max-w-4xl overflow-hidden lg:rounded-lg">
+                <Image src={post.thumbnail} alt="" width={1024} height={576} />
+            </div>
             <div className="container mx-auto mt-8 max-w-2xl text-slate-800">
                 <p>{post.body}</p>
 

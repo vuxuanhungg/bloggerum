@@ -5,11 +5,12 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { PostProps } from '../types'
+import Image from 'next/image'
 
 type Inputs = {
     title: string
     body: string
-    tag: string
+    thumbnail: FileList
 }
 
 const TagInputWrapper = ({
@@ -127,16 +128,20 @@ const Dashboard = () => {
     const [shouldDisableSubmit, setShouldDisableSubmit] = useState(false)
     const {
         register,
+        watch,
         handleSubmit,
         formState: { errors },
     } = useForm<Inputs>()
     const onSubmit = handleSubmit(async (formData) => {
+        const data = new FormData()
+        data.append('title', formData.title)
+        data.append('body', formData.body)
+        data.append('thumbnail', formData.thumbnail[0])
+        data.append('tags', JSON.stringify(tags))
+
         const res = await fetch('http://localhost:8080/api/posts', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-            },
-            body: JSON.stringify({ ...formData, tags }),
+            body: data,
             credentials: 'include',
         })
         if (!res.ok) {
@@ -149,7 +154,7 @@ const Dashboard = () => {
     })
 
     return (
-        <div className="mx-auto max-w-md text-slate-700">
+        <div className="mx-auto my-8 max-w-md text-slate-700">
             <h1 className="text-center text-3xl font-bold">Create post</h1>
             <form
                 className="mt-8"
@@ -187,6 +192,33 @@ const Dashboard = () => {
                         <p role="alert" className="mt-2 text-sm text-red-500">
                             {errors.body.message}
                         </p>
+                    )}
+                </div>
+                <div className="mt-6">
+                    <label htmlFor="thumbnail">Thumbnail</label>
+                    <input
+                        type="file"
+                        accept="image/*"
+                        id="thumbnail"
+                        className="mt-2 block file:mr-4 file:cursor-pointer file:rounded file:border file:border-slate-500 file:bg-slate-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-slate-700"
+                        {...register('thumbnail', {
+                            required: 'Thumbnail is required',
+                        })}
+                    />
+                    {errors.thumbnail && (
+                        <p role="alert" className="mt-2 text-sm text-red-500">
+                            {errors.thumbnail.message}
+                        </p>
+                    )}
+                    {watch('thumbnail')?.length > 0 && (
+                        <div className="relative mt-2 aspect-video overflow-hidden rounded">
+                            <Image
+                                src={URL.createObjectURL(watch('thumbnail')[0])}
+                                alt={watch('thumbnail')[0].name}
+                                fill
+                                className="object-cover"
+                            />
+                        </div>
                     )}
                 </div>
                 <TagInputWrapper

@@ -3,6 +3,7 @@ import { Schema, Types, model } from 'mongoose'
 interface IPost {
     title: string
     body: string
+    thumbnail: string
     userId: Types.ObjectId
     tags: Types.ObjectId[]
 }
@@ -14,6 +15,10 @@ const postSchema = new Schema<IPost>(
             required: true,
         },
         body: {
+            type: String,
+            required: true,
+        },
+        thumbnail: {
             type: String,
             required: true,
         },
