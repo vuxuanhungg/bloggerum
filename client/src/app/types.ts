@@ -6,6 +6,7 @@ export type PostProps = {
     user: {
         _id: string
         name: string
+        avatar: string
     }
     tags: string[]
     updatedAt: string
@@ -15,4 +16,5 @@ export type UserProps = {
     _id: string
     name: string
     email: string
+    avatar?: string
 }

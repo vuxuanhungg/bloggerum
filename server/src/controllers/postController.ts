@@ -64,6 +64,7 @@ export const getPosts = asyncHandler(async (req, res) => {
                             user: {
                                 _id: 1,
                                 name: 1,
+                                avatar: 1,
                             },
                             tags: 1,
                             updatedAt: 1,
@@ -96,11 +97,20 @@ export const getPosts = asyncHandler(async (req, res) => {
         },
     ])
 
-    // Convert thumbnail from imageName to url
+    // Convert thumbnail and user avatar from S3 key to url
     const posts = await Promise.all(
+        // WARNING: Post is not typesafe
         result[0].posts.map(async (post: any) => {
-            const url = await getFileUrl(post.thumbnail)
-            return { ...post, thumbnail: url }
+            const thumbnailUrl = await getFileUrl(post.thumbnail)
+            const avatarUrl = await getFileUrl(post.user.avatar)
+            return {
+                ...post,
+                thumbnail: thumbnailUrl,
+                user: {
+                    ...post.user,
+                    avatar: avatarUrl,
+                },
+            }
         })
     )
 
@@ -141,6 +151,7 @@ export const getPost = asyncHandler(async (req, res) => {
                 user: {
                     _id: 1,
                     name: 1,
+                    avatar: 1,
                 },
                 tags: 1,
                 updatedAt: 1,
@@ -152,8 +163,19 @@ export const getPost = asyncHandler(async (req, res) => {
         throw new Error('Post not found')
     }
 
-    const thumbnailUrl = await getFileUrl(result[0].thumbnail)
-    res.json({ ...result[0], thumbnail: thumbnailUrl })
+    // WARNING: Post is not typesafe
+    const post = result[0]
+    const thumbnailUrl = await getFileUrl(post.thumbnail)
+    const avatarUrl = await getFileUrl(post.user.avatar)
+
+    res.json({
+        ...post,
+        thumbnail: thumbnailUrl,
+        user: {
+            ...post.user,
+            avatar: avatarUrl,
+        },
+    })
 })
 
 // @desc    Create a post
@@ -162,10 +184,6 @@ export const getPost = asyncHandler(async (req, res) => {
 export const createPost = asyncHandler(async (req, res) => {
     const { title, body }: { title: string; body: string } = req.body
     const tags: string[] = JSON.parse(req.body.tags)
-    // get the file
-    // resize and optimize image (sharp)
-    // upload image to s3 bucket
-    // store image name and any extra data to server
 
     if (!req.file) {
         throw new Error('Post missing thumbnail field')

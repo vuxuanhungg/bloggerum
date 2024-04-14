@@ -1,5 +1,4 @@
 import express from 'express'
-import multer from 'multer'
 import {
     createPost,
     deletePost,
@@ -8,10 +7,9 @@ import {
     updatePost,
 } from '../controllers/postController'
 import { getUser, isAuth } from '../middleware/authMiddleware'
+import { upload } from '../config/multer'
 
 const router = express.Router()
-const storage = multer.memoryStorage()
-const upload = multer({ storage })
 
 router
     .route('/')

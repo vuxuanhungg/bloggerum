@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { PostProps } from '../types'
 
 const Post = ({ post }: { post: PostProps }) => {
+    const { user } = post
     return (
         <article>
             <Link href={`/post/${post._id}`}>
@@ -21,11 +22,25 @@ const Post = ({ post }: { post: PostProps }) => {
                     {post.body}...
                 </p>
             </Link>
-            <Link href={`/user/${post.user._id}`}>
+            <Link href={`/user/${user._id}`}>
                 <div className="mt-4 flex items-center gap-3">
-                    <div className="h-6 w-6 rounded-full bg-green-500"></div>
+                    <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-slate-500">
+                        {!user.avatar && (
+                            <p className="font-semibold text-white">
+                                {user.name.slice(0, 1)}
+                            </p>
+                        )}
+                        {user.avatar && (
+                            <Image
+                                src={user.avatar}
+                                alt="profile picture"
+                                fill
+                                className="object-cover"
+                            />
+                        )}
+                    </div>
                     <h3 className="font-semibold text-slate-700">
-                        {post.user.name}
+                        {user.name}
                     </h3>
                 </div>
             </Link>

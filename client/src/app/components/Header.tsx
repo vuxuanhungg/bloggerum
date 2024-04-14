@@ -1,8 +1,9 @@
 'use client'
+import Image from 'next/image'
 import Link from 'next/link'
-import { useAuthContext } from '../context/AuthContext'
 import { useRouter } from 'next/navigation'
 import { toast } from 'react-toastify'
+import { useAuthContext } from '../context/AuthContext'
 
 const Header = () => {
     const router = useRouter()
@@ -56,8 +57,22 @@ const Header = () => {
                                 href={`/user/${user._id}`}
                                 className="flex items-center gap-2"
                             >
-                                <div className="h-8 w-8 rounded-full bg-slate-500"></div>
-                                {user?.name}
+                                <div className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-slate-500">
+                                    {!user.avatar && (
+                                        <p className="font-semibold text-white">
+                                            {user.name.slice(0, 1)}
+                                        </p>
+                                    )}
+                                    {user.avatar && (
+                                        <Image
+                                            src={user.avatar}
+                                            alt="profile picture"
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    )}
+                                </div>
+                                {user.name}
                             </Link>
                             <button
                                 className="rounded border border-slate-300 px-5 py-2"

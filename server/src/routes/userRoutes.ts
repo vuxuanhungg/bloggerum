@@ -7,6 +7,7 @@ import {
     updateUserProfile,
 } from '../controllers/userController'
 import { getUser, isAuth } from '../middleware/authMiddleware'
+import { upload } from '../config/multer'
 
 const router = express.Router()
 
@@ -16,6 +17,6 @@ router.post('/logout', logoutUser)
 router
     .route('/profile')
     .get(isAuth, getUser, getUserProfile)
-    .put(isAuth, getUser, updateUserProfile)
+    .put(isAuth, getUser, upload.single('avatar'), updateUserProfile)
 
 export default router

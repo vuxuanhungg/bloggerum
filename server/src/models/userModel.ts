@@ -5,6 +5,8 @@ interface IUser {
     name: string
     email: string
     password: string
+    avatar: string | null
+    allAvatars: string[]
 }
 
 interface IUserMethods {
@@ -18,6 +20,8 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true },
         password: { type: String, required: true },
+        avatar: { type: String, default: null },
+        allAvatars: [{ type: String }],
     },
     {
         timestamps: true,
