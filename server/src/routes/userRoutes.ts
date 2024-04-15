@@ -5,6 +5,8 @@ import {
     logoutUser,
     getUserProfile,
     updateUserProfile,
+    forgotPassword,
+    changePassword,
 } from '../controllers/userController'
 import { getUser, isAuth } from '../middleware/authMiddleware'
 import { upload } from '../config/multer'
@@ -18,5 +20,7 @@ router
     .route('/profile')
     .get(isAuth, getUser, getUserProfile)
     .put(isAuth, getUser, upload.single('avatar'), updateUserProfile)
+router.post('/forgot-password', forgotPassword)
+router.post('/change-password', changePassword)
 
 export default router

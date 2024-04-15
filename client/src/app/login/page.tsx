@@ -81,6 +81,30 @@ const Login = () => {
                         </p>
                     )}
                 </div>
+                <div className="mt-4">
+                    <div className="flex justify-between text-sm">
+                        {/* TODO: Remember user or revoke after a period of time */}
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="rememberMe"
+                                className="cursor-pointer"
+                            />
+                            <label
+                                htmlFor="rememberMe"
+                                className="cursor-pointer"
+                            >
+                                Remember me
+                            </label>
+                        </div>
+                        <Link
+                            href="/forgot-password"
+                            className="hover:underline"
+                        >
+                            Forgot password?
+                        </Link>
+                    </div>
+                </div>
                 <div className="mt-6">
                     <button
                         type="submit"

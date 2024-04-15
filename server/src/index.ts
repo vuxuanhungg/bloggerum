@@ -1,32 +1,20 @@
-import RedisStore from 'connect-redis'
+import cors from 'cors'
 import 'dotenv/config'
 import express from 'express'
 import session from 'express-session'
-import cors from 'cors'
-import { createClient } from 'redis'
 import { connectDB } from './config/db'
-import { COOKIE_NAME, REDIS_PREFIX, __prod__ } from './constants'
+import { redisStore } from './config/redis'
+import { COOKIE_NAME, __prod__ } from './constants'
 import { errorHandler, notFound } from './middleware/errorMiddleware'
-import userRoutes from './routes/userRoutes'
 import postRoutes from './routes/postRoutes'
 import tagRoutes from './routes/tagRoutes'
+import userRoutes from './routes/userRoutes'
 
 const PORT = process.env.PORT || 8080
 
 connectDB()
 
 const app = express()
-
-// Initialize client
-const redisClient = createClient()
-redisClient.connect().catch(console.error)
-
-// Initialize store
-const redisStore = new RedisStore({
-    client: redisClient,
-    prefix: REDIS_PREFIX,
-    disableTouch: true,
-})
 
 // Initialize session storage
 app.use(

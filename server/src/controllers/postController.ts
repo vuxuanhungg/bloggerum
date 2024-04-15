@@ -6,7 +6,7 @@ import { getFileUrl, s3Client } from '../config/s3'
 import { TEBI_BUCKET_NAME } from '../constants'
 import Post from '../models/postModel'
 import Tag from '../models/tagModel'
-import { uuid } from '../utils'
+import uuid from '../utils/uuid'
 
 // Mongoose does not auto cast string to ObjectId if we use `aggregate()`
 const { ObjectId } = mongoose.Types

@@ -1,10 +1,16 @@
 import { PutObjectCommand } from '@aws-sdk/client-s3'
 import asyncHandler from 'express-async-handler'
 import sharp from 'sharp'
+import { redis } from '../config/redis'
 import { getFileUrl, s3Client } from '../config/s3'
-import { COOKIE_NAME, TEBI_BUCKET_NAME } from '../constants'
+import {
+    COOKIE_NAME,
+    FORGOT_PASSWORD_PREFIX,
+    TEBI_BUCKET_NAME,
+} from '../constants'
 import User from '../models/userModel'
-import { uuid } from '../utils'
+import sendEmail from '../utils/sendEmail'
+import uuid from '../utils/uuid'
 
 // @desc    Register user
 // @route   POST /api/users
@@ -137,5 +143,62 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         avatar: avatarUrl,
+    })
+})
+
+// @desc    Forgot password
+// @route   POST /api/users/forgot-password
+// @access  Public
+export const forgotPassword = asyncHandler(async (req, res) => {
+    const { email } = req.body
+    const user = await User.findOne({ email })
+    if (!user) {
+        res.status(404)
+        throw new Error('User not found')
+    }
+
+    const token = uuid()
+    await redis.set(
+        FORGOT_PASSWORD_PREFIX + token,
+        user._id.toString(),
+        'EX',
+        3 * 24 * 60 * 60 * 1000 // 3 days
+    )
+
+    const messageUrl = await sendEmail(
+        req.body.email,
+        'Reset Password',
+        `<a href="http://localhost:3000/change-password/${token}">Reset password</a>`
+    )
+    res.send({ messageUrl })
+})
+
+// @desc    Change password
+// @route   POST /api/users/change-password
+// @access  Public
+export const changePassword = asyncHandler(async (req, res) => {
+    const { token, password } = req.body
+    const userId = await redis.get(FORGOT_PASSWORD_PREFIX + token)
+    if (!userId) {
+        res.status(401)
+        throw new Error('Token expired')
+    }
+
+    const user = await User.findById(userId)
+    if (!user) {
+        res.status(404)
+        throw new Error('User not found')
+    }
+
+    user.password = password
+    await user.save()
+
+    // Log user in after change password
+    req.session.userId = user._id.toString()
+
+    res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
     })
 })
