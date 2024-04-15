@@ -14,6 +14,7 @@ import { useAuthContext } from '../context/AuthContext'
 interface Inputs {
     name: string
     avatar: FileList
+    shouldRemoveAvatar: boolean
 }
 
 interface ImageSelectProps {
@@ -22,7 +23,7 @@ interface ImageSelectProps {
 
 const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
     const { user } = useAuthContext()
-    const { register, watch, resetField } = useFormContext()
+    const { register, watch, setValue, resetField } = useFormContext()
     const [modalOpen, setModalOpen] = useState(false)
 
     // TODO: Handle this
@@ -131,6 +132,20 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                                     <button
                                         type="button"
                                         className="flex items-center justify-center gap-2 rounded border border-gray-300 px-6 py-2 text-sm font-semibold text-blue-500"
+                                        onClick={() => {
+                                            try {
+                                                setValue(
+                                                    'shouldRemoveAvatar',
+                                                    true
+                                                )
+                                                onSubmit()
+                                                setModalOpen(false)
+                                            } catch (err) {
+                                                toast.error(
+                                                    'Failed to remove profile picture'
+                                                )
+                                            }
+                                        }}
                                     >
                                         <TrashIcon className="h-4 w-4 text-blue-500" />
                                         <span>Remove</span>
@@ -197,6 +212,9 @@ const Form = () => {
         if (formData.avatar?.length > 0) {
             // Case 1: Update avatar
             data.append('avatar', formData.avatar[0])
+        } else if (user?.avatar && formData.shouldRemoveAvatar) {
+            // Case 2: Remove avatar
+            data.append('shouldRemoveAvatar', 'true')
         } else {
             // Case 2: Update other info
             data.append('name', formData.name)

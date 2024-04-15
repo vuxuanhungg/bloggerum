@@ -92,7 +92,6 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 // @access  Private
 export const updateUserProfile = asyncHandler(async (req, res) => {
     const user = req.user!
-    console.log(req.body)
 
     let avatarUrl = null
     if (user.avatar) {
@@ -121,11 +120,15 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
         user.avatar = imageName
         user.allAvatars.push(imageName)
         avatarUrl = await getFileUrl(imageName)
+    } else if (user.avatar && req.body.shouldRemoveAvatar) {
+        // WARNING: Need a better way to keep user.avatar and avatarUrl in sync
+        user.avatar = null
+        avatarUrl = null
+    } else {
+        user.name = req.body.name || user.name
+        user.email = req.body.email || user.email
+        user.password = req.body.password || user.password
     }
-
-    user.name = req.body.name || user.name
-    user.email = req.body.email || user.email
-    user.password = req.body.password || user.password
 
     const updatedUser = await user.save()
 
