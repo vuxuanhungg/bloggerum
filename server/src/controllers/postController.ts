@@ -102,7 +102,9 @@ export const getPosts = asyncHandler(async (req, res) => {
         // WARNING: Post is not typesafe
         result[0].posts.map(async (post: any) => {
             const thumbnailUrl = await getFileUrl(post.thumbnail)
-            const avatarUrl = await getFileUrl(post.user.avatar)
+            const avatarUrl = post.user.avatar
+                ? await getFileUrl(post.user.avatar)
+                : null
             return {
                 ...post,
                 thumbnail: thumbnailUrl,
@@ -166,7 +168,9 @@ export const getPost = asyncHandler(async (req, res) => {
     // WARNING: Post is not typesafe
     const post = result[0]
     const thumbnailUrl = await getFileUrl(post.thumbnail)
-    const avatarUrl = await getFileUrl(post.user.avatar)
+    const avatarUrl = post.user.avatar
+        ? await getFileUrl(post.user.avatar)
+        : null
 
     res.json({
         ...post,
