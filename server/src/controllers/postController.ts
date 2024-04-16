@@ -2,8 +2,8 @@ import { PutObjectCommand } from '@aws-sdk/client-s3'
 import asyncHandler from 'express-async-handler'
 import mongoose from 'mongoose'
 import sharp from 'sharp'
-import { getFileUrl, s3Client } from '../config/s3'
-import { TEBI_BUCKET_NAME } from '../constants'
+import { s3Client } from '../config/s3'
+import { TEBI_BUCKET_NAME, TEBI_ENDPOINT } from '../constants'
 import Post from '../models/postModel'
 import Tag from '../models/tagModel'
 import uuid from '../utils/uuid'
@@ -97,29 +97,7 @@ export const getPosts = asyncHandler(async (req, res) => {
         },
     ])
 
-    // Convert thumbnail and user avatar from S3 key to url
-    const posts = await Promise.all(
-        // WARNING: Post is not typesafe
-        result[0].posts.map(async (post: any) => {
-            const thumbnailUrl = await getFileUrl(post.thumbnail)
-            const avatarUrl = post.user.avatar
-                ? await getFileUrl(post.user.avatar)
-                : null
-            return {
-                ...post,
-                thumbnail: thumbnailUrl,
-                user: {
-                    ...post.user,
-                    avatar: avatarUrl,
-                },
-            }
-        })
-    )
-
-    res.json({
-        totalPages: result[0].totalPages,
-        posts,
-    })
+    res.json(result[0])
 })
 
 // @desc    Get a post
@@ -165,29 +143,21 @@ export const getPost = asyncHandler(async (req, res) => {
         throw new Error('Post not found')
     }
 
-    // WARNING: Post is not typesafe
-    const post = result[0]
-    const thumbnailUrl = await getFileUrl(post.thumbnail)
-    const avatarUrl = post.user.avatar
-        ? await getFileUrl(post.user.avatar)
-        : null
-
-    res.json({
-        ...post,
-        thumbnail: thumbnailUrl,
-        user: {
-            ...post.user,
-            avatar: avatarUrl,
-        },
-    })
+    res.json(result[0])
 })
 
 // @desc    Create a post
 // @route   POST /api/posts/
 // @access  Private
 export const createPost = asyncHandler(async (req, res) => {
-    const { title, body }: { title: string; body: string } = req.body
-    const tags: string[] = JSON.parse(req.body.tags)
+    const {
+        title,
+        body,
+        tags: stringifiedTags,
+    }: { title: string; body: string; tags: string } = req.body
+    const tags: string[] | null = stringifiedTags
+        ? JSON.parse(stringifiedTags)
+        : null
 
     if (!req.file) {
         throw new Error('Post missing thumbnail field')
@@ -211,7 +181,7 @@ export const createPost = asyncHandler(async (req, res) => {
     })
     await s3Client.send(uploadCommand)
 
-    if (tags.length > 0) {
+    if (tags) {
         tags.map((tag) => tag.toLowerCase()).forEach(async (tag) => {
             const tagExists = await Tag.findOne({ name: tag })
             if (!tagExists) {
@@ -223,7 +193,7 @@ export const createPost = asyncHandler(async (req, res) => {
     const post = await Post.create({
         title,
         body,
-        thumbnail: imageName,
+        thumbnail: `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}/${imageName}`,
         userId: req.session.userId,
         tags,
     })

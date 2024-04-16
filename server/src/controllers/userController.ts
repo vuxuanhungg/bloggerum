@@ -2,11 +2,12 @@ import { PutObjectCommand } from '@aws-sdk/client-s3'
 import asyncHandler from 'express-async-handler'
 import sharp from 'sharp'
 import { redis } from '../config/redis'
-import { getFileUrl, s3Client } from '../config/s3'
+import { s3Client } from '../config/s3'
 import {
     COOKIE_NAME,
     FORGOT_PASSWORD_PREFIX,
     TEBI_BUCKET_NAME,
+    TEBI_ENDPOINT,
 } from '../constants'
 import User from '../models/userModel'
 import sendEmail from '../utils/sendEmail'
@@ -78,18 +79,11 @@ export const logoutUser = asyncHandler(async (req, res, next) => {
 export const getUserProfile = asyncHandler(async (req, res) => {
     const user = req.user!
 
-    // WARN: Currently, need to get URl for user avatar
-    // on every getUser request
-    let avatarUrl = null
-    if (user.avatar) {
-        avatarUrl = await getFileUrl(user.avatar)
-    }
-
     res.json({
         _id: user._id,
         name: user.name,
         email: user.email,
-        avatar: avatarUrl,
+        avatar: user.avatar,
     })
 })
 
@@ -98,11 +92,6 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 // @access  Private
 export const updateUserProfile = asyncHandler(async (req, res) => {
     const user = req.user!
-
-    let avatarUrl = null
-    if (user.avatar) {
-        avatarUrl = await getFileUrl(user.avatar)
-    }
 
     if (req.file) {
         const imageName = uuid()
@@ -123,13 +112,11 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
         })
         await s3Client.send(uploadCommand)
 
-        user.avatar = imageName
-        user.allAvatars.push(imageName)
-        avatarUrl = await getFileUrl(imageName)
+        const avatarUrl = `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}/${imageName}`
+        user.avatar = avatarUrl
+        user.allAvatars.push(avatarUrl)
     } else if (user.avatar && req.body.shouldRemoveAvatar) {
-        // WARNING: Need a better way to keep user.avatar and avatarUrl in sync
         user.avatar = null
-        avatarUrl = null
     } else {
         user.name = req.body.name || user.name
         user.email = req.body.email || user.email
@@ -142,7 +129,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
         _id: updatedUser._id,
         name: updatedUser.name,
         email: updatedUser.email,
-        avatar: avatarUrl,
+        avatar: updatedUser.avatar,
     })
 })
 
@@ -170,7 +157,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
         'Reset Password',
         `<a href="http://localhost:3000/change-password/${token}">Reset password</a>`
     )
-    res.send({ messageUrl })
+    res.json({ messageUrl })
 })
 
 // @desc    Change password

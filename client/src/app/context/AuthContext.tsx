@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<AuthContextValue['user']>(null)
 
     const checkStatus = async () => {
+        // NOTE: Maybe only call server if has cookie
         const res = await fetch('http://localhost:8080/api/users/profile', {
             credentials: 'include',
         })

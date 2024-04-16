@@ -4,7 +4,7 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 'bloggerum.s3.tebi.io',
+                hostname: 's3.tebi.io',
             },
         ],
     },
