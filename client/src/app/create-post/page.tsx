@@ -122,7 +122,7 @@ const TagInputWrapper = ({
     )
 }
 
-const Dashboard = () => {
+const CreatePost = () => {
     const router = useRouter()
     const [tags, setTags] = useState<string[]>([])
     const [shouldDisableSubmit, setShouldDisableSubmit] = useState(false)
@@ -238,4 +238,4 @@ const Dashboard = () => {
     )
 }
 
-export default Dashboard
+export default CreatePost

@@ -11,7 +11,7 @@ const Actions = ({ userId }: { userId: string }) => {
                 {user?._id === userId && (
                     <div className="flex items-center justify-center gap-3">
                         <Link
-                            href="/dashboard"
+                            href="/create-post"
                             className="rounded border border-slate-400 px-5 py-2"
                         >
                             Create post
