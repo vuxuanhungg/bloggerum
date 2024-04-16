@@ -18,7 +18,7 @@ router
 router
     .route('/:id')
     .get(getPost)
-    .put(isAuth, getUser, updatePost)
+    .put(isAuth, getUser, upload.single('thumbnail'), updatePost)
     .delete(isAuth, getUser, deletePost)
 
 export default router

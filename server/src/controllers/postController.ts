@@ -1,4 +1,4 @@
-import { PutObjectCommand } from '@aws-sdk/client-s3'
+import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import asyncHandler from 'express-async-handler'
 import mongoose from 'mongoose'
 import sharp from 'sharp'
@@ -216,12 +216,65 @@ export const updatePost = asyncHandler(async (req, res) => {
         throw new Error('User not authorized')
     }
 
-    post.title = req.body.title || post.title
-    post.body = req.body.body || post.body
-    post.tags = req.body.tags || post.tags
+    const {
+        title,
+        body,
+        tags: stringifiedTags,
+    }: { title: string; body: string; tags: string } = req.body
+    const tags: string[] | null = stringifiedTags
+        ? JSON.parse(stringifiedTags)
+        : null
+
+    // Update title and body
+    post.title = title || post.title
+    post.body = body || post.body
+
+    // Update thumbnail
+    if (req.file) {
+        // Delete old thumbnail
+        const deleteCommand = new DeleteObjectCommand({
+            Bucket: TEBI_BUCKET_NAME,
+            Key: post.thumbnail.replace(
+                `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}/`,
+                ''
+            ),
+        })
+        await s3Client.send(deleteCommand)
+
+        // Process and upload new thumbnail
+        const imageName = uuid()
+        const imageBuffer = await sharp(req.file.buffer)
+            .resize({
+                width: 1024,
+                height: 576,
+                withoutEnlargement: true,
+            })
+            .webp()
+            .toBuffer()
+
+        const uploadCommand = new PutObjectCommand({
+            Bucket: TEBI_BUCKET_NAME,
+            Key: imageName,
+            Body: imageBuffer,
+            ContentType: req.file.mimetype,
+        })
+        await s3Client.send(uploadCommand)
+
+        post.thumbnail = `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}/${imageName}`
+    }
+
+    // Update tags
+    if (tags) {
+        tags.map((tag) => tag.toLowerCase()).forEach(async (tag) => {
+            const tagExists = await Tag.findOne({ name: tag })
+            if (!tagExists) {
+                await Tag.create({ name: tag })
+            }
+        })
+        post.tags = tags
+    }
 
     const updatedPost = await post.save()
-
     res.json(updatedPost)
 })
 
@@ -240,6 +293,15 @@ export const deletePost = asyncHandler(async (req, res) => {
         res.status(401)
         throw new Error('User not authorized')
     }
+
+    const deleteCommand = new DeleteObjectCommand({
+        Bucket: TEBI_BUCKET_NAME,
+        Key: post.thumbnail.replace(
+            `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}/`,
+            ''
+        ),
+    })
+    await s3Client.send(deleteCommand)
 
     await Post.deleteOne({ _id: req.params.id })
     res.json({ message: 'Post successfully removed' })

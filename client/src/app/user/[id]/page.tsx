@@ -1,7 +1,7 @@
 import Pagination from '~/app/components/Pagination'
 import Post from '~/app/components/Post'
 import { PostProps } from '~/app/types'
-import Actions from './Actions'
+import { UserActions, PostActions } from './Actions'
 
 const UserPosts = async ({
     params,
@@ -20,14 +20,17 @@ const UserPosts = async ({
 
     return (
         <div className="container my-8">
-            <Actions userId={params.id} />
+            <UserActions userId={params.id} />
             <div className="mt-8">
                 {totalPages === 0 && <div>No posts yet</div>}
                 {totalPages > 0 && (
                     <>
                         <section className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
                             {posts.map((post) => (
-                                <Post key={post._id} post={post} />
+                                <div key={post._id} className="group relative">
+                                    <Post post={post} />
+                                    <PostActions post={post} />
+                                </div>
                             ))}
                         </section>
                         <Pagination

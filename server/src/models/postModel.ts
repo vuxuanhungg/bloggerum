@@ -5,7 +5,7 @@ interface IPost {
     body: string
     thumbnail: string
     userId: Types.ObjectId
-    tags: Types.ObjectId[]
+    tags: string[]
 }
 
 const postSchema = new Schema<IPost>(
