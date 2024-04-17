@@ -42,7 +42,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 // @route   POST /api/users/login
 // @access  Public
 export const loginUser = asyncHandler(async (req, res) => {
-    const { email, password } = req.body
+    const { email, password, shouldRememberUser } = req.body
     const user = await User.findOne({ email })
 
     // User not found or incorrect password
@@ -53,6 +53,9 @@ export const loginUser = asyncHandler(async (req, res) => {
 
     // Store userId session in browser's cookie
     req.session.userId = user._id.toString()
+    if (shouldRememberUser) {
+        req.session.cookie.maxAge = 1 * 365 * 24 * 60 * 60 * 1000 // 1 year
+    }
 
     res.json({
         _id: user._id,

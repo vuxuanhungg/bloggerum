@@ -25,7 +25,6 @@ app.use(
         saveUninitialized: false, // only save session when data exists
         secret: process.env.SESSION_SECRET,
         cookie: {
-            maxAge: 10 * 365 * 24 * 60 * 60 * 1000, // 10 years
             httpOnly: true,
             sameSite: 'lax',
             secure: __prod__,

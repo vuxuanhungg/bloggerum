@@ -9,6 +9,7 @@ import { useAuthContext } from '../context/AuthContext'
 type Inputs = {
     email: string
     password: string
+    shouldRememberUser: boolean
 }
 
 const Login = () => {
@@ -84,11 +85,12 @@ const Login = () => {
                 <div className="mt-4">
                     <div className="flex justify-between text-sm">
                         {/* TODO: Remember user or revoke after a period of time */}
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
                             <input
                                 type="checkbox"
                                 id="rememberMe"
                                 className="cursor-pointer"
+                                {...register('shouldRememberUser')}
                             />
                             <label
                                 htmlFor="rememberMe"
