@@ -16,7 +16,6 @@ type Inputs = {
 const CreatePost = () => {
     const router = useRouter()
     const [tags, setTags] = useState<string[]>([])
-    const [shouldDisableSubmit, setShouldDisableSubmit] = useState(false)
     const {
         register,
         watch,
@@ -112,12 +111,12 @@ const CreatePost = () => {
                         </div>
                     )}
                 </div>
-                <TagInput {...{ tags, setTags, setShouldDisableSubmit }} />
+                <TagInput {...{ tags, setTags }} />
                 <div className="mt-6">
                     <button
                         type="submit"
-                        disabled={shouldDisableSubmit}
-                        className="w-full rounded bg-slate-200 px-8 py-3 disabled:bg-slate-100"
+                        className="w-full rounded bg-slate-200 px-8 py-3 disabled:cursor-not-allowed disabled:bg-slate-100"
+                        onClick={() => console.log('click')}
                     >
                         Create
                     </button>

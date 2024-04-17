@@ -34,7 +34,6 @@ const Form = ({ post }: { post: PostProps }) => {
     const router = useRouter()
 
     const [tags, setTags] = useState<string[]>(post.tags)
-    const [shouldDisableSubmit, setShouldDisableSubmit] = useState(false)
     const {
         register,
         watch,
@@ -152,12 +151,11 @@ const Form = ({ post }: { post: PostProps }) => {
                         </div>
                     </div>
                 </div>
-                <TagInput {...{ tags, setTags, setShouldDisableSubmit }} />
+                <TagInput {...{ tags, setTags }} />
                 <div className="mt-6">
                     <div className="grid grid-cols-2 items-center gap-2">
                         <button
                             type="submit"
-                            disabled={shouldDisableSubmit}
                             className="rounded border border-gray-300 bg-blue-500 px-6 py-2 font-semibold text-white hover:bg-blue-400"
                         >
                             Save changes
