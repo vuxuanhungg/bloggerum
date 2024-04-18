@@ -8,6 +8,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { revalidatePosts } from '../actions'
 import Modal from '../components/Modal'
 import { useAuthContext } from '../context/AuthContext'
 
@@ -234,6 +235,7 @@ const Form = () => {
         setUser(updatedUser)
         resetField('avatar')
         toast.success('Profile updated!')
+        revalidatePosts()
     })
 
     return (
