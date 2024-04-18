@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { revalidatePosts } from '../actions'
 import TagInput from '../components/TagInput'
 import { PostProps } from '../types'
 
@@ -40,6 +41,7 @@ const CreatePost = () => {
 
         const post: PostProps = await res.json()
         toast.success('Post created!')
+        revalidatePosts()
         router.push(`/post/${post._id}`)
     })
 

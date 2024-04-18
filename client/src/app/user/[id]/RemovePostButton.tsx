@@ -1,6 +1,7 @@
 'use client'
 import { TrashIcon } from '@heroicons/react/20/solid'
 import { toast } from 'react-toastify'
+import { revalidatePosts } from '~/app/actions'
 
 const RemovePostButton = ({ postId }: { postId: string }) => {
     const removePost = async (id: string) => {
@@ -15,8 +16,7 @@ const RemovePostButton = ({ postId }: { postId: string }) => {
         }
 
         toast.success('Post removed!')
-
-        // TODO: Revalidate posts after remove
+        revalidatePosts()
     }
     return (
         <button
