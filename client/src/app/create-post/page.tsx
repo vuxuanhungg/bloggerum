@@ -118,7 +118,6 @@ const CreatePost = () => {
                     <button
                         type="submit"
                         className="w-full rounded bg-slate-200 px-8 py-3 disabled:cursor-not-allowed disabled:bg-slate-100"
-                        onClick={() => console.log('click')}
                     >
                         Create
                     </button>

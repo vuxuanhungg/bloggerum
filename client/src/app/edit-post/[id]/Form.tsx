@@ -8,6 +8,7 @@ import { toast } from 'react-toastify'
 import { revalidatePosts } from '~/app/actions'
 import TagInput from '~/app/components/TagInput'
 import { PostProps } from '~/app/types'
+import { compareArrays } from '~/app/utils'
 
 type Inputs = {
     title: string
@@ -18,6 +19,7 @@ type Inputs = {
 const Form = ({ post }: { post: PostProps }) => {
     const router = useRouter()
     const [tags, setTags] = useState<string[]>(post.tags)
+
     const {
         register,
         watch,
@@ -29,6 +31,13 @@ const Form = ({ post }: { post: PostProps }) => {
             body: post.body,
         },
     })
+
+    const shouldDisableSubmit =
+        watch('title') === post.title &&
+        watch('body') === post.body &&
+        watch('thumbnail')?.length === 0 &&
+        compareArrays(tags, post.tags)
+
     const onSubmit = handleSubmit(async (formData) => {
         const data = new FormData()
         data.append('title', formData.title)
@@ -138,14 +147,20 @@ const Form = ({ post }: { post: PostProps }) => {
                     <div className="grid grid-cols-2 items-center gap-2">
                         <button
                             type="submit"
-                            className="rounded border border-gray-300 bg-blue-500 px-6 py-2 font-semibold text-white hover:bg-blue-400"
+                            disabled={shouldDisableSubmit}
+                            className="rounded border border-gray-300 bg-blue-500 px-6 py-2 font-semibold text-white enabled:hover:bg-blue-400"
+                            title={
+                                shouldDisableSubmit
+                                    ? 'You have not made any changes to the post'
+                                    : ''
+                            }
                         >
                             Save changes
                         </button>
                         <button
                             type="button"
                             className="rounded border border-gray-300 px-6 py-2 font-semibold text-blue-500 hover:bg-gray-100"
-                            onClick={() => console.log('You cancel it')}
+                            onClick={() => router.back()}
                         >
                             Cancel
                         </button>
