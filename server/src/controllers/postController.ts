@@ -1,12 +1,13 @@
-import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
 import asyncHandler from 'express-async-handler'
 import mongoose from 'mongoose'
-import sharp from 'sharp'
-import { s3Client } from '../config/s3'
-import { TEBI_BUCKET_NAME, TEBI_ENDPOINT } from '../constants'
+import { deleteImage, uploadImage } from '../helpers/imageHelper'
+import {
+    commonPostAggregationPipelineStages,
+    getPostsBySearchPipeline,
+    getPostsByUserOrTagPipeline,
+} from '../helpers/postHelper'
 import Post from '../models/postModel'
 import Tag from '../models/tagModel'
-import uuid from '../utils/uuid'
 
 // Mongoose does not auto cast string to ObjectId if we use `aggregate()`
 const { ObjectId } = mongoose.Types
@@ -17,9 +18,10 @@ const { ObjectId } = mongoose.Types
 export const getPosts = asyncHandler(async (req, res) => {
     const { userId, tag } = req.query
     const page = Number(req.query.page) || 1
-    const limit = Number(req.query.limit) || 10
+    const limit = Number(req.query.limit) || 14
     const skip = (page - 1) * limit
 
+    // Query by userId or tag
     const queryByUser = userId
         ? { userId: new ObjectId(userId.toString()) }
         : {}
@@ -30,73 +32,20 @@ export const getPosts = asyncHandler(async (req, res) => {
         : {}
     const query = { ...queryByUser, ...queryByTag }
 
-    const result = await Post.aggregate([
-        { $match: query },
-        {
-            $sort: { updatedAt: -1 },
-        },
-        {
-            // $facet allows multi aggregation: "posts" and "count"
-            $facet: {
-                posts: [
-                    {
-                        // join users collection with posts
-                        $lookup: {
-                            from: 'users',
-                            localField: 'userId',
-                            foreignField: '_id',
-                            as: 'user',
-                        },
-                    },
-                    {
-                        // prettify the result: make the "user" field an object instead of an array with one object
-                        $addFields: {
-                            user: {
-                                $first: '$user',
-                            },
-                        },
-                    },
-                    {
-                        $project: {
-                            title: 1,
-                            body: 1,
-                            thumbnail: 1,
-                            user: {
-                                _id: 1,
-                                name: 1,
-                                avatar: 1,
-                            },
-                            tags: 1,
-                            updatedAt: 1,
-                        },
-                    },
-                    { $skip: skip },
-                    { $limit: limit },
-                ],
-                count: [
-                    {
-                        $count: 'count',
-                    },
-                ],
-            },
-        },
-        {
-            $project: {
-                posts: 1,
-                totalPages: {
-                    $ifNull: [
-                        {
-                            $ceil: {
-                                $divide: [{ $first: '$count.count' }, limit],
-                            },
-                        },
-                        0,
-                    ],
-                },
-            },
-        },
-    ])
+    // Query by search
+    const searchQuery = req.query.q
 
+    // Get the result
+    let result
+    if (searchQuery) {
+        result = await Post.aggregate(
+            getPostsBySearchPipeline(searchQuery as string, skip, limit)
+        )
+    } else {
+        result = await Post.aggregate(
+            getPostsByUserOrTagPipeline(query, skip, limit)
+        )
+    }
     res.json(result[0])
 })
 
@@ -108,35 +57,9 @@ export const getPost = asyncHandler(async (req, res) => {
         {
             $match: { _id: new ObjectId(req.params.id) },
         },
-        {
-            $lookup: {
-                from: 'users',
-                localField: 'userId',
-                foreignField: '_id',
-                as: 'user',
-            },
-        },
-        {
-            $addFields: {
-                user: {
-                    $first: '$user',
-                },
-            },
-        },
-        {
-            $project: {
-                title: 1,
-                body: 1,
-                thumbnail: 1,
-                user: {
-                    _id: 1,
-                    name: 1,
-                    avatar: 1,
-                },
-                tags: 1,
-                updatedAt: 1,
-            },
-        },
+        commonPostAggregationPipelineStages.joinUsersCollection,
+        commonPostAggregationPipelineStages.prettifyUserField,
+        commonPostAggregationPipelineStages.singlePostProject,
     ])
 
     if (result.length === 0) {
@@ -163,23 +86,7 @@ export const createPost = asyncHandler(async (req, res) => {
         throw new Error('Post missing thumbnail field')
     }
 
-    const imageName = uuid()
-    const imageBuffer = await sharp(req.file.buffer)
-        .resize({
-            width: 1024,
-            height: 576,
-            withoutEnlargement: true,
-        })
-        .webp()
-        .toBuffer()
-
-    const uploadCommand = new PutObjectCommand({
-        Bucket: TEBI_BUCKET_NAME,
-        Key: imageName,
-        Body: imageBuffer,
-        ContentType: req.file.mimetype,
-    })
-    await s3Client.send(uploadCommand)
+    const { imageUrl } = await uploadImage(req.file)
 
     if (tags) {
         tags.map((tag) => tag.toLowerCase()).forEach(async (tag) => {
@@ -193,7 +100,7 @@ export const createPost = asyncHandler(async (req, res) => {
     const post = await Post.create({
         title,
         body,
-        thumbnail: `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}/${imageName}`,
+        thumbnail: imageUrl,
         userId: req.session.userId,
         tags,
     })
@@ -232,35 +139,11 @@ export const updatePost = asyncHandler(async (req, res) => {
     // Update thumbnail
     if (req.file) {
         // Delete old thumbnail
-        const deleteCommand = new DeleteObjectCommand({
-            Bucket: TEBI_BUCKET_NAME,
-            Key: post.thumbnail.replace(
-                `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}/`,
-                ''
-            ),
-        })
-        await s3Client.send(deleteCommand)
+        await deleteImage(post.thumbnail)
 
         // Process and upload new thumbnail
-        const imageName = uuid()
-        const imageBuffer = await sharp(req.file.buffer)
-            .resize({
-                width: 1024,
-                height: 576,
-                withoutEnlargement: true,
-            })
-            .webp()
-            .toBuffer()
-
-        const uploadCommand = new PutObjectCommand({
-            Bucket: TEBI_BUCKET_NAME,
-            Key: imageName,
-            Body: imageBuffer,
-            ContentType: req.file.mimetype,
-        })
-        await s3Client.send(uploadCommand)
-
-        post.thumbnail = `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}/${imageName}`
+        const { imageUrl } = await uploadImage(req.file)
+        post.thumbnail = imageUrl
     }
 
     // Update tags
@@ -294,15 +177,7 @@ export const deletePost = asyncHandler(async (req, res) => {
         throw new Error('User not authorized')
     }
 
-    const deleteCommand = new DeleteObjectCommand({
-        Bucket: TEBI_BUCKET_NAME,
-        Key: post.thumbnail.replace(
-            `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}/`,
-            ''
-        ),
-    })
-    await s3Client.send(deleteCommand)
-
+    await deleteImage(post.thumbnail)
     await Post.deleteOne({ _id: req.params.id })
     res.json({ message: 'Post successfully removed' })
 })

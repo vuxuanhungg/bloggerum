@@ -1,9 +1,38 @@
 'use client'
+import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { useAuthContext } from '../context/AuthContext'
+
+const SearchBox = () => {
+    const router = useRouter()
+    const { register, handleSubmit } = useForm<{ query: string }>()
+
+    const onSubmit = handleSubmit(({ query }) => {
+        if (query.length > 0) {
+            router.push(`/?q=${query}`)
+        }
+    })
+
+    return (
+        <form
+            onSubmit={onSubmit}
+            className="flex items-center overflow-hidden rounded-full border-2 border-gray-300 pl-1 focus-within:ring focus-within:ring-slate-900/10"
+        >
+            <input
+                type="text"
+                className="px-4 py-2 focus:outline-none"
+                {...register('query')}
+            />
+            <button className="px-3 py-2">
+                <MagnifyingGlassIcon className="h-6 w-6 text-slate-500" />
+            </button>
+        </form>
+    )
+}
 
 const Header = () => {
     const router = useRouter()
@@ -28,6 +57,7 @@ const Header = () => {
             <Link href="/" className="text-3xl font-semibold">
                 Bloggerum
             </Link>
+            <SearchBox />
             {isLoading && <p>Loading...</p>}
             {!isLoading && (
                 <nav>

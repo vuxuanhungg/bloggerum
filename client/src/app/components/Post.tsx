@@ -1,11 +1,12 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { PostProps } from '../types'
+import { format } from 'date-fns'
 
-const Post = ({ post }: { post: PostProps }) => {
+const Post = ({ post, isFirst }: { post: PostProps; isFirst?: boolean }) => {
     const { user } = post
     return (
-        <article>
+        <article className={`${isFirst ? 'lg:col-span-2' : ''}`}>
             <Link href={`/post/${post._id}`}>
                 <div className="relative min-h-60 overflow-hidden rounded">
                     <Image
@@ -39,9 +40,17 @@ const Post = ({ post }: { post: PostProps }) => {
                             />
                         )}
                     </div>
-                    <h3 className="font-semibold text-slate-700">
-                        {user.name}
-                    </h3>
+                    <div className="flex items-center gap-3">
+                        <h3 className="font-semibold text-slate-700">
+                            {user.name}
+                        </h3>
+                        <span className="text-xs text-gray-300 dark:text-gray-600">
+                            •
+                        </span>
+                        <p className="text-gray-500">
+                            {format(new Date(post.updatedAt), 'MMMM dd, yyyy')}
+                        </p>
+                    </div>
                 </div>
             </Link>
         </article>

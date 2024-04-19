@@ -1,14 +1,7 @@
-import { PutObjectCommand } from '@aws-sdk/client-s3'
 import asyncHandler from 'express-async-handler'
-import sharp from 'sharp'
 import { redis } from '../config/redis'
-import { s3Client } from '../config/s3'
-import {
-    COOKIE_NAME,
-    FORGOT_PASSWORD_PREFIX,
-    TEBI_BUCKET_NAME,
-    TEBI_ENDPOINT,
-} from '../constants'
+import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from '../constants'
+import { uploadImage } from '../helpers/imageHelper'
 import User from '../models/userModel'
 import sendEmail from '../utils/sendEmail'
 import uuid from '../utils/uuid'
@@ -97,27 +90,9 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
     const user = req.user!
 
     if (req.file) {
-        const imageName = uuid()
-        const imageBuffer = await sharp(req.file.buffer)
-            .resize({
-                width: 256,
-                height: 256,
-                withoutEnlargement: true,
-            })
-            .webp()
-            .toBuffer()
-
-        const uploadCommand = new PutObjectCommand({
-            Bucket: TEBI_BUCKET_NAME,
-            Key: imageName,
-            Body: imageBuffer,
-            ContentType: req.file.mimetype,
-        })
-        await s3Client.send(uploadCommand)
-
-        const avatarUrl = `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}/${imageName}`
-        user.avatar = avatarUrl
-        user.allAvatars.push(avatarUrl)
+        const { imageUrl } = await uploadImage(req.file)
+        user.avatar = imageUrl
+        user.allAvatars.push(imageUrl)
     } else if (user.avatar && req.body.shouldRemoveAvatar) {
         user.avatar = null
     } else {
