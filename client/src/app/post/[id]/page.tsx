@@ -43,8 +43,13 @@ const DetailPost = async ({ params }: { params: { id: string } }) => {
                     </p>
                 </div>
             </div>
-            <div className="mx-auto mt-8 max-w-4xl overflow-hidden lg:rounded-lg">
-                <Image src={post.thumbnail} alt="" width={1024} height={576} />
+            <div className="relative mx-auto mt-8 aspect-video max-w-4xl overflow-hidden lg:rounded-lg">
+                <Image
+                    src={post.thumbnail}
+                    alt=""
+                    fill
+                    className="object-cover"
+                />
             </div>
             <div className="container mx-auto mt-8 max-w-2xl text-slate-800">
                 <p>{post.body}</p>
