@@ -13,8 +13,8 @@ export const uploadImage = async (image: {
     const imageName = uuid()
     const imageBuffer = await sharp(image.buffer)
         .resize({
-            width: 1024,
-            height: 576,
+            width: 1200,
+            height: 800,
             withoutEnlargement: true,
         })
         .webp()
