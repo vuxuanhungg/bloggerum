@@ -1,4 +1,5 @@
 import { Combobox } from '@headlessui/react'
+import { XMarkIcon } from '@heroicons/react/20/solid'
 import { Dispatch, SetStateAction, useState, useEffect } from 'react'
 import { toast } from 'react-toastify'
 
@@ -37,9 +38,9 @@ const TagInput = ({
                   )
 
         // Filter out existing tags
-        const result = filteredByQuery.filter(
-            (suggestion) => !tags.includes(suggestion)
-        )
+        const result = filteredByQuery
+            .filter((suggestion) => !tags.includes(suggestion))
+            .slice(0, 5)
 
         return result
     }
@@ -47,12 +48,12 @@ const TagInput = ({
 
     return (
         <div className="mt-6">
-            <label htmlFor="tags">Tags</label>
-            <div className="mt-2 flex flex-wrap items-center gap-2 rounded border border-slate-500 p-1 focus-within:outline focus-within:outline-1">
+            {/* <label htmlFor="tags">Tags</label> */}
+            <div className="mt-2 flex flex-wrap items-center gap-2 rounded">
                 {tags.map((tag) => (
                     <span
                         key={tag}
-                        className="flex items-center gap-2 rounded border px-3 py-1"
+                        className="flex items-center gap-2 rounded-lg border py-1 pl-3 pr-2"
                     >
                         {tag}
                         <button
@@ -61,7 +62,7 @@ const TagInput = ({
                                 setTags(tags.filter((_tag) => _tag !== tag))
                             }
                         >
-                            x
+                            <XMarkIcon className="h-4 w-4" />
                         </button>
                     </span>
                 ))}
@@ -78,9 +79,9 @@ const TagInput = ({
                     >
                         <Combobox.Input
                             id="tags"
-                            placeholder="Post tags"
+                            placeholder={tags.length === 0 ? 'Post tags' : ''}
                             autoComplete="off"
-                            className="w-full px-4 py-2 focus:outline-none"
+                            className="w-full py-2 focus:outline-none"
                             onChange={(e) => setQuery(e.target.value)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
@@ -114,19 +115,21 @@ const TagInput = ({
                         />
 
                         {filteredSuggestions.length > 0 && (
-                            <Combobox.Options className="absolute -left-1 top-full mt-2 overflow-hidden rounded bg-white shadow">
-                                {filteredSuggestions.map((tag) => (
-                                    <Combobox.Option
-                                        key={tag}
-                                        value={tag}
-                                        className={({ active }) =>
-                                            `px-4 py-2 ${active ? 'bg-slate-500 text-white' : ''}`
-                                        }
-                                    >
-                                        {tag}
-                                    </Combobox.Option>
-                                ))}
-                            </Combobox.Options>
+                            <div className="absolute -left-1 top-full mt-2 w-80 overflow-hidden rounded bg-white shadow">
+                                <Combobox.Options className="rounded border-2 border-gray-300">
+                                    {filteredSuggestions.map((tag) => (
+                                        <Combobox.Option
+                                            key={tag}
+                                            value={tag}
+                                            className={({ active }) =>
+                                                `px-6 py-3 text-sm ${active ? 'bg-gray-200' : ''}`
+                                            }
+                                        >
+                                            {tag}
+                                        </Combobox.Option>
+                                    ))}
+                                </Combobox.Options>
+                            </div>
                         )}
                     </Combobox>
                 </div>
