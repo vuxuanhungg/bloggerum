@@ -1,7 +1,31 @@
 import { format } from 'date-fns'
 import Image from 'next/image'
 import Link from 'next/link'
+import Post from '~/app/components/Post'
 import { PostProps } from '~/app/types'
+
+const RelatedPosts = ({ posts }: { posts: PostProps[] }) => {
+    if (posts.length === 0) return null
+
+    return (
+        <div className="container mb-8 mt-16">
+            <div className="flex items-center gap-8">
+                <div className="h-[1px] flex-grow bg-gray-200"></div>
+                <h2 className="text-2xl font-semibold text-gray-900">
+                    Related posts
+                </h2>
+                <div className="h-[1px] flex-grow bg-gray-200"></div>
+            </div>
+            <div className="mt-8">
+                <section className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                    {posts.map((post) => (
+                        <Post key={post._id} post={post} />
+                    ))}
+                </section>
+            </div>
+        </div>
+    )
+}
 
 const DetailPost = async ({ params }: { params: { id: string } }) => {
     const res = await fetch(`http://localhost:8080/api/posts/${params.id}`)
@@ -54,20 +78,24 @@ const DetailPost = async ({ params }: { params: { id: string } }) => {
             <div className="container mx-auto mt-8 max-w-2xl text-slate-800">
                 <p>{post.body}</p>
 
-                {post.tags.length > 0 && (
-                    <ul className="mt-8 flex items-center gap-2">
-                        {post.tags.map((tag) => (
-                            <li key={tag}>
-                                <Link
-                                    href={`/?tag=${tag}`}
-                                    className="rounded border px-4 py-2"
-                                >
-                                    {tag}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
-                )}
+                    {post.tags.length > 0 && (
+                        <ul className="mt-8 flex items-center gap-2">
+                            {post.tags.map((tag) => (
+                                <li key={tag}>
+                                    <Link
+                                        href={`/?tag=${tag}`}
+                                        className="rounded border px-4 py-2"
+                                    >
+                                        {tag}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
+            </div>
+            <div className="mt-8">
+                <RelatedPosts posts={post.relatedPosts} />
             </div>
         </div>
     )

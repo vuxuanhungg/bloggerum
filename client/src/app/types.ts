@@ -10,6 +10,7 @@ export type PostProps = {
     }
     tags: string[]
     updatedAt: string
+    relatedPosts: PostProps[]
 }
 
 export type UserProps = {

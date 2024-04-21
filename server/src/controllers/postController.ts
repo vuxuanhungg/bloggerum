@@ -53,9 +53,11 @@ export const getPosts = asyncHandler(async (req, res) => {
 // @route   GET /api/posts/:id
 // @access  Public
 export const getPost = asyncHandler(async (req, res) => {
+    const postId = new ObjectId(req.params.id)
+
     const result = await Post.aggregate([
         {
-            $match: { _id: new ObjectId(req.params.id) },
+            $match: { _id: postId },
         },
         commonPostAggregationPipelineStages.joinUsersCollection,
         commonPostAggregationPipelineStages.prettifyUserField,
@@ -65,8 +67,25 @@ export const getPost = asyncHandler(async (req, res) => {
     if (result.length === 0) {
         throw new Error('Post not found')
     }
+    const post = result[0]
 
-    res.json(result[0])
+    const relatedPosts = await Post.aggregate([
+        {
+            $match: {
+                _id: { $ne: postId },
+                tags: { $in: post.tags },
+            },
+        },
+        commonPostAggregationPipelineStages.joinUsersCollection,
+        commonPostAggregationPipelineStages.prettifyUserField,
+        commonPostAggregationPipelineStages.singlePostProject,
+        { $limit: 6 },
+    ])
+
+    res.json({
+        ...post,
+        relatedPosts,
+    })
 })
 
 // @desc    Create a post
