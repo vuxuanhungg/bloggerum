@@ -17,7 +17,7 @@ export const PostActions = ({ post }: { post: PostProps }) => {
             <div className="flex items-center gap-1">
                 <Link
                     href={`/edit-post/${post._id}`}
-                    className="group/edit rounded-lg bg-gray-200 p-2 hover:bg-green-100"
+                    className="group/edit rounded-lg bg-gray-200 p-2 shadow hover:bg-green-100"
                 >
                     <PencilIcon className="h-4 w-4 group-hover/edit:text-green-600" />
                 </Link>

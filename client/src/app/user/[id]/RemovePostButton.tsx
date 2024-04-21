@@ -20,7 +20,7 @@ const RemovePostButton = ({ postId }: { postId: string }) => {
     }
     return (
         <button
-            className="group/remove rounded-lg bg-gray-200 p-2 hover:bg-red-100"
+            className="group/remove rounded-lg bg-gray-200 p-2 shadow hover:bg-red-100"
             onClick={() => removePost(postId)}
         >
             <TrashIcon className="h-4 w-4 group-hover/remove:text-red-600" />
