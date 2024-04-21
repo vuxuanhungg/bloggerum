@@ -20,14 +20,28 @@ export default async function Home({
 
     return (
         <div className="container my-8">
-            <section className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
+            {(searchQuery || tag) && (
+                <div className="my-8">
+                    <h2 className="text-center text-lg font-semibold text-gray-700">
+                        Search results for: &nbsp;
+                        <span className="italic">
+                            &ldquo;{searchQuery || tag}&rdquo;
+                        </span>
+                    </h2>
+                </div>
+            )}
+            <section className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                 {totalPages === 0 && <div>No posts yet</div>}
                 {totalPages > 0 &&
                     posts.map((post, index) => (
                         <Post
                             key={post._id}
                             post={post}
-                            isFirst={index === 0}
+                            isHeadline={
+                                currentPage === 1 &&
+                                index === 0 &&
+                                !(searchQuery || tag)
+                            }
                         />
                     ))}
             </section>
