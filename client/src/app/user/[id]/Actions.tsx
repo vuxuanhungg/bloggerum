@@ -1,5 +1,5 @@
 'use client'
-import { PencilIcon } from '@heroicons/react/20/solid'
+import { PencilIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useAuthContext } from '~/app/context/AuthContext'
 import { PostProps } from '~/app/types'
@@ -17,9 +17,9 @@ export const PostActions = ({ post }: { post: PostProps }) => {
             <div className="flex items-center gap-1">
                 <Link
                     href={`/edit-post/${post._id}`}
-                    className="group/edit rounded-lg bg-gray-200 p-2"
+                    className="group/edit rounded-lg bg-gray-200 p-2 hover:bg-green-100"
                 >
-                    <PencilIcon className="h-4 w-4 group-hover/edit:text-blue-500" />
+                    <PencilIcon className="h-4 w-4 group-hover/edit:text-green-600" />
                 </Link>
                 <RemovePostButton postId={post._id} />
             </div>

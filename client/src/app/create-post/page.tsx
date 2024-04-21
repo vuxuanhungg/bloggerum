@@ -3,7 +3,7 @@ import { PhotoIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { FormProvider, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import { toast } from 'react-toastify'
 import { revalidatePosts } from '../actions'
@@ -52,12 +52,8 @@ const CreatePost = () => {
     })
 
     return (
-        <div className="mx-auto my-8 max-w-2xl">
-            <form
-                className="mt-8"
-                onKeyDown={(e) => e.key !== 'Enter'}
-                onSubmit={onSubmit}
-            >
+        <div className="mx-auto mb-8 min-w-[40rem] max-w-2xl">
+            <form onKeyDown={(e) => e.key !== 'Enter'} onSubmit={onSubmit}>
                 <div>
                     <TextareaAutosize
                         rows={1}

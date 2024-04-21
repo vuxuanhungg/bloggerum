@@ -1,5 +1,4 @@
 'use client'
-
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -41,16 +40,24 @@ const Login = () => {
     })
 
     return (
-        <div className="mx-auto max-w-md text-slate-700">
-            <h1 className="text-center text-3xl font-bold">Login</h1>
+        <div className="mx-auto min-w-[28rem] max-w-md">
+            <h1 className="text-center text-3xl font-bold">Welcome back!</h1>
+            <p className="mt-2 text-center text-sm text-gray-500">
+                Sign in to start creating.
+            </p>
             <form className="mt-8" onSubmit={onSubmit}>
                 <div>
-                    <label htmlFor="email">Email</label>
+                    <label
+                        htmlFor="email"
+                        className="text-sm font-medium text-gray-700"
+                    >
+                        Email
+                    </label>
                     <input
                         type="text"
                         id="email"
                         placeholder="Your email"
-                        className="mt-2 w-full rounded border border-slate-500 px-4 py-2"
+                        className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
                         {...register('email', {
                             required: 'Email is required',
                             pattern: {
@@ -65,13 +72,19 @@ const Login = () => {
                         </p>
                     )}
                 </div>
+
                 <div className="mt-6">
-                    <label htmlFor="password">Password</label>
+                    <label
+                        htmlFor="password"
+                        className="text-sm font-medium text-gray-700"
+                    >
+                        Password
+                    </label>
                     <input
                         type="password"
                         id="password"
                         placeholder="Your password"
-                        className="mt-2 w-full rounded border border-slate-500 px-4 py-2"
+                        className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
                         {...register('password', {
                             required: 'Password is required',
                         })}
@@ -82,9 +95,9 @@ const Login = () => {
                         </p>
                     )}
                 </div>
+
                 <div className="mt-4">
                     <div className="flex justify-between text-sm">
-                        {/* TODO: Remember user or revoke after a period of time */}
                         <div className="flex items-center gap-1">
                             <input
                                 type="checkbox"
@@ -101,7 +114,7 @@ const Login = () => {
                         </div>
                         <Link
                             href="/forgot-password"
-                            className="hover:underline"
+                            className="text-green-600 underline"
                         >
                             Forgot password?
                         </Link>
@@ -110,7 +123,7 @@ const Login = () => {
                 <div className="mt-6">
                     <button
                         type="submit"
-                        className="w-full rounded bg-slate-200 px-8 py-3"
+                        className="w-full rounded bg-black px-8 py-3 font-semibold text-white"
                     >
                         Login
                     </button>
@@ -118,7 +131,10 @@ const Login = () => {
                 <div className="mt-8">
                     <div className="flex items-center justify-center gap-2">
                         <p>Not a member?</p>
-                        <Link href="/register" className="text-blue-700">
+                        <Link
+                            href="/register"
+                            className="text-green-600 underline"
+                        >
                             Sign up
                         </Link>
                     </div>

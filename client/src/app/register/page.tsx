@@ -1,5 +1,4 @@
 'use client'
-
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -43,18 +42,27 @@ const Register = () => {
     })
 
     return (
-        <div className="mx-auto max-w-md text-slate-700">
+        <div className="mx-auto min-w-[28rem] max-w-md">
             <h1 className="text-center text-3xl font-bold">
                 Create an account
             </h1>
+            <p className="mt-2 text-center text-sm text-gray-500">
+                A few steps towards great things.
+            </p>
+
             <form className="mt-8" onSubmit={onSubmit}>
                 <div>
-                    <label htmlFor="name">Username</label>
+                    <label
+                        htmlFor="name"
+                        className="text-sm font-medium text-gray-700"
+                    >
+                        Username
+                    </label>
                     <input
                         type="text"
                         id="name"
                         placeholder="Your username"
-                        className="mt-2 w-full rounded border border-slate-500 px-4 py-2"
+                        className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
                         {...register('name', {
                             required: 'Username is required',
                         })}
@@ -65,13 +73,19 @@ const Register = () => {
                         </p>
                     )}
                 </div>
+
                 <div className="mt-6">
-                    <label htmlFor="email">Email</label>
+                    <label
+                        htmlFor="email"
+                        className="text-sm font-medium text-gray-700"
+                    >
+                        Email
+                    </label>
                     <input
                         type="text"
                         id="email"
                         placeholder="Your email"
-                        className="mt-2 w-full rounded border border-slate-500 px-4 py-2"
+                        className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
                         {...register('email', {
                             required: 'Email is required',
                             pattern: {
@@ -87,12 +101,17 @@ const Register = () => {
                     )}
                 </div>
                 <div className="mt-6">
-                    <label htmlFor="password">Password</label>
+                    <label
+                        htmlFor="password"
+                        className="text-sm font-medium text-gray-700"
+                    >
+                        Password
+                    </label>
                     <input
                         type="password"
                         id="password"
                         placeholder="Your password"
-                        className="mt-2 w-full rounded border border-slate-500 px-4 py-2"
+                        className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
                         {...register('password', {
                             required: 'Password is required',
                         })}
@@ -104,12 +123,17 @@ const Register = () => {
                     )}
                 </div>
                 <div className="mt-6">
-                    <label htmlFor="confirmPassword">Confirm password</label>
+                    <label
+                        htmlFor="confirmPassword"
+                        className="text-sm font-medium text-gray-700"
+                    >
+                        Confirm password
+                    </label>
                     <input
                         type="password"
                         id="confirmPassword"
                         placeholder="Confirm password"
-                        className="mt-2 w-full rounded border border-slate-500 px-4 py-2"
+                        className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
                         {...register('confirmPassword', {
                             required: 'Please confirm your password',
                             validate: (value) => {
@@ -127,7 +151,7 @@ const Register = () => {
                 <div className="mt-6">
                     <button
                         type="submit"
-                        className="w-full rounded bg-slate-200 px-8 py-3"
+                        className="w-full rounded bg-black px-8 py-3 font-semibold text-white"
                     >
                         Register
                     </button>
@@ -135,7 +159,10 @@ const Register = () => {
                 <div className="mt-8">
                     <div className="flex items-center justify-center gap-2">
                         <p>Already a member?</p>
-                        <Link href="/login" className="text-blue-700">
+                        <Link
+                            href="/login"
+                            className="text-green-600 underline"
+                        >
                             Login
                         </Link>
                     </div>

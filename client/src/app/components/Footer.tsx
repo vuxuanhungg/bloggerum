@@ -1,6 +1,6 @@
 const Footer = () => {
     return (
-        <footer className="divide-y divide-gray-900">
+        <footer className="mt-8 divide-y divide-gray-900">
             <div className="container border-t py-8">
                 <p className="text-center text-sm">
                     Copyright © 2024 Bloggerum. All rights reserved.

@@ -5,12 +5,12 @@ import {
 } from '@heroicons/react/20/solid'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { useAuthContext } from '../context/AuthContext'
 import UserPanel from './UserPanel'
 
-const SearchBox = () => {
+const SearchBox = ({ hidden = false }: { hidden?: boolean }) => {
     const router = useRouter()
     const { register, handleSubmit } = useForm<{ query: string }>()
 
@@ -19,6 +19,8 @@ const SearchBox = () => {
             router.push(`/?q=${query}`)
         }
     })
+
+    if (hidden) return null
 
     return (
         <form
@@ -39,12 +41,24 @@ const SearchBox = () => {
 }
 
 const Header = () => {
+    const pathname = usePathname()
+    const searchBoxHiddenPaths = [
+        '/register',
+        '/login',
+        '/profile',
+        '/create-post',
+        '/edit-post',
+        '/forgot-password',
+    ]
+    const searchBoxHidden = searchBoxHiddenPaths.some((path) =>
+        pathname.includes(path)
+    )
+
     const { isLoading, user } = useAuthContext()
 
     return (
         <header className="container my-8 flex items-center justify-between gap-4">
             <Link href="/" className="text-3xl font-semibold">
-                {/* Bloggerum */}
                 <Image
                     src="/logo.png"
                     width={465}
@@ -53,7 +67,7 @@ const Header = () => {
                     className="-ml-3 w-52"
                 />
             </Link>
-            <SearchBox />
+            <SearchBox hidden={searchBoxHidden} />
             {isLoading && <p>Loading...</p>}
             {!isLoading && (
                 <nav>
@@ -62,7 +76,7 @@ const Header = () => {
                             <li>
                                 <Link
                                     href="/register"
-                                    className="rounded px-4 py-2"
+                                    className="px-8 py-3 text-sm font-medium text-gray-700 hover:text-green-600 hover:underline"
                                 >
                                     Register
                                 </Link>
@@ -70,7 +84,7 @@ const Header = () => {
                             <li>
                                 <Link
                                     href="/login"
-                                    className="rounded border border-slate-500 px-4 py-2"
+                                    className="rounded-lg bg-green-600 px-8 py-3 text-sm font-medium text-white transition-colors hover:bg-green-500"
                                 >
                                     Login
                                 </Link>

@@ -1,12 +1,16 @@
 'use client'
 import {
     ArrowUpTrayIcon,
-    PencilIcon,
+    EllipsisVerticalIcon,
     TrashIcon,
 } from '@heroicons/react/20/solid'
+import { Menu, Transition } from '@headlessui/react'
+import { PencilIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
+
+import TextareaAutosize from 'react-textarea-autosize'
 import { toast } from 'react-toastify'
 import { revalidatePosts } from '../actions'
 import Modal from '../components/Modal'
@@ -14,6 +18,7 @@ import { useAuthContext } from '../context/AuthContext'
 
 interface Inputs {
     name: string
+    bio: string
     avatar: FileList
     shouldRemoveAvatar: boolean
 }
@@ -52,7 +57,7 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                         />
                     )}
                 </button>
-                <div className="pointer-events-none absolute -bottom-1 -right-1 rounded-full border bg-white p-1 peer-hover:bg-slate-200">
+                <div className="pointer-events-none absolute -bottom-1 -right-1 rounded-full border bg-white p-1 peer-hover:bg-green-200">
                     <PencilIcon className="h-3 w-3" />
                 </div>
             </div>
@@ -63,6 +68,44 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                 isOpen={modalOpen}
                 onClose={() => setModalOpen(false)}
             >
+                <div className="absolute right-4 top-6">
+                    <Menu as="div" className="relative">
+                        <Menu.Button>
+                            <EllipsisVerticalIcon className="h-5 w-5" />
+                        </Menu.Button>
+
+                        <Transition
+                            as={Fragment}
+                            enter="transition ease-out duration-100"
+                            enterFrom="transform opacity-0 scale-95"
+                            enterTo="transform opacity-100 scale-100"
+                            leave="transition ease-in duration-75"
+                            leaveFrom="transform opacity-100 scale-100"
+                            leaveTo="transform opacity-0 scale-95"
+                        >
+                            <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+                                <Menu.Item>
+                                    {({ active }) => (
+                                        <button
+                                            className={`${
+                                                active
+                                                    ? 'bg-gray-200'
+                                                    : 'text-gray-900'
+                                            } w-full rounded-md px-4 py-3 text-sm`}
+                                            onClick={() =>
+                                                toast.warn(
+                                                    'This feature is not yet available'
+                                                )
+                                            }
+                                        >
+                                            Past profile pictures
+                                        </button>
+                                    )}
+                                </Menu.Item>
+                            </Menu.Items>
+                        </Transition>
+                    </Menu>
+                </div>
                 <div className="mt-6">
                     <div className="relative mx-auto flex h-64 w-64 items-center justify-center overflow-hidden rounded-full bg-gray-500">
                         {/* Not upload new avatar yet, show current avatar */}
@@ -99,7 +142,9 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                 {/* Not upload new avatar yet, show file picker */}
                 {(!watch('avatar') || watch('avatar').length === 0) && (
                     <div className="mt-6">
-                        <div className="grid grid-cols-3 items-center gap-2">
+                        <div
+                            className={`grid items-center gap-2 ${user.avatar ? 'grid-cols-2' : 'grid-cols-1'}`}
+                        >
                             <input
                                 type="file"
                                 accept="image/*"
@@ -109,22 +154,15 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                             />
                             <button
                                 type="button"
-                                className="rounded border border-gray-300 text-sm font-semibold text-blue-500"
+                                className="rounded border border-gray-300 text-sm font-semibold text-green-600"
                             >
                                 <label
                                     htmlFor="file"
-                                    className="flex cursor-pointer items-center justify-center gap-2 px-6 py-2"
+                                    className="flex cursor-pointer items-center justify-center gap-2 px-6 py-3"
                                 >
-                                    <ArrowUpTrayIcon className="h-4 w-4 text-blue-500" />
+                                    <ArrowUpTrayIcon className="h-4 w-4 text-green-600" />
                                     <span>Upload</span>
                                 </label>
-                            </button>
-                            <button
-                                type="button"
-                                className="flex items-center justify-center gap-2 rounded border border-gray-300 px-6 py-2 text-sm font-semibold text-blue-500"
-                            >
-                                <PencilIcon className="h-4 w-4 text-blue-500" />
-                                <span>Select</span>
                             </button>
 
                             {/* User only able to remove avatar if currently has one */}
@@ -132,7 +170,7 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                                 <>
                                     <button
                                         type="button"
-                                        className="flex items-center justify-center gap-2 rounded border border-gray-300 px-6 py-2 text-sm font-semibold text-blue-500"
+                                        className="flex items-center justify-center gap-2 rounded border border-gray-300 px-6 py-3 text-sm font-semibold text-green-600"
                                         onClick={() => {
                                             try {
                                                 setValue(
@@ -148,7 +186,7 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                                             }
                                         }}
                                     >
-                                        <TrashIcon className="h-4 w-4 text-blue-500" />
+                                        <TrashIcon className="h-4 w-4 text-green-600" />
                                         <span>Remove</span>
                                     </button>
                                 </>
@@ -163,7 +201,7 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                         <div className="grid grid-cols-2 items-center gap-2">
                             <button
                                 type="button"
-                                className="rounded border border-gray-300 bg-blue-500 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-400"
+                                className="rounded border border-gray-300 bg-green-600 px-6 py-3 text-sm font-semibold text-white hover:bg-green-500"
                                 onClick={() => {
                                     try {
                                         onSubmit()
@@ -179,7 +217,7 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                             </button>
                             <button
                                 type="button"
-                                className="rounded border border-gray-300 px-6 py-2 text-sm font-semibold text-blue-500 hover:bg-gray-100"
+                                className="rounded border border-gray-300 px-6 py-3 text-sm font-semibold text-green-600 hover:bg-gray-100"
                                 onClick={() => resetField('avatar')}
                             >
                                 <span>Cancel</span>
@@ -197,6 +235,7 @@ const Form = () => {
     const methods = useForm<Inputs>({
         defaultValues: {
             name: user?.name,
+            bio: user?.bio,
         },
     })
     const {
@@ -239,19 +278,24 @@ const Form = () => {
     })
 
     return (
-        <div className="mx-auto max-w-md text-slate-700">
+        <div className="mx-auto min-w-[28rem] max-w-md">
             <h1 className="text-center text-3xl font-bold">Update profile</h1>
             <FormProvider {...methods}>
                 <form className="mt-8" onSubmit={onSubmit}>
                     <ImageSelect onSubmit={onSubmit} />
 
                     <div className="mt-6">
-                        <label htmlFor="name">Username</label>
+                        <label
+                            htmlFor="name"
+                            className="font-medium text-gray-700"
+                        >
+                            Username
+                        </label>
                         <input
                             type="text"
                             id="name"
                             placeholder="Your username"
-                            className="mt-2 w-full rounded border border-slate-500 px-4 py-2"
+                            className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
                             {...register('name', {
                                 required: 'Username is required',
                             })}
@@ -265,11 +309,38 @@ const Form = () => {
                             </p>
                         )}
                     </div>
+
+                    <div className="mt-6">
+                        <label
+                            htmlFor="bio"
+                            className="font-medium text-gray-700"
+                        >
+                            Bio
+                        </label>
+                        <TextareaAutosize
+                            minRows={3}
+                            id="bio"
+                            placeholder="Your bio"
+                            className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
+                            {...register('bio')}
+                        />
+                        {errors.bio && (
+                            <p
+                                role="alert"
+                                className="mt-2 text-sm text-red-500"
+                            >
+                                {errors.bio.message}
+                            </p>
+                        )}
+                    </div>
                     <div className="mt-6">
                         <button
                             type="submit"
-                            disabled={watch('name') === user?.name}
-                            className="w-full rounded bg-slate-200 px-8 py-3 disabled:bg-slate-100"
+                            disabled={
+                                watch('name') === user?.name &&
+                                watch('bio') === user?.bio
+                            }
+                            className="w-full rounded bg-green-600 px-8 py-3 font-semibold text-white enabled:hover:bg-green-500 disabled:bg-green-500"
                         >
                             Save changes
                         </button>

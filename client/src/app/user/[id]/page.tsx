@@ -20,9 +20,9 @@ const UserPosts = async ({
         await res.json()
 
     return (
-        <div className="container my-8">
+        <div className="container">
+            <UserHeader user={posts[0].user} />
             <div className="mt-8">
-                <UserHeader user={posts[0].user} />
                 {totalPages === 0 && <div>No posts yet</div>}
                 {totalPages > 0 && (
                     <>

@@ -16,10 +16,14 @@ export default function RootLayout({
     return (
         <html lang="en">
             <AuthProvider>
-                <body className={inter.className}>
+                <body
+                    className={`${inter.className} flex min-h-screen flex-col`}
+                >
                     <Header />
                     {children}
-                    <Footer />
+                    <div className="mt-auto">
+                        <Footer />
+                    </div>
                     <ToastContainer autoClose={2500} />
                 </body>
             </AuthProvider>

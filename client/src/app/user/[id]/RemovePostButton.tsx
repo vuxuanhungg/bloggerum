@@ -1,5 +1,5 @@
 'use client'
-import { TrashIcon } from '@heroicons/react/20/solid'
+import { TrashIcon } from '@heroicons/react/24/outline'
 import { toast } from 'react-toastify'
 import { revalidatePosts } from '~/app/actions'
 
@@ -20,10 +20,10 @@ const RemovePostButton = ({ postId }: { postId: string }) => {
     }
     return (
         <button
-            className="group/remove rounded-lg bg-gray-200 p-2"
+            className="group/remove rounded-lg bg-gray-200 p-2 hover:bg-red-100"
             onClick={() => removePost(postId)}
         >
-            <TrashIcon className="h-4 w-4 group-hover/remove:text-red-500" />
+            <TrashIcon className="h-4 w-4 group-hover/remove:text-red-600" />
         </button>
     )
 }

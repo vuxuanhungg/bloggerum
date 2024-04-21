@@ -4,6 +4,7 @@ import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import TextareaAutosize from 'react-textarea-autosize'
 import { toast } from 'react-toastify'
 import { revalidatePosts } from '~/app/actions'
 import TagInput from '~/app/components/TagInput'
@@ -61,20 +62,13 @@ const Form = ({ post }: { post: PostProps }) => {
     })
 
     return (
-        <div className="mx-auto my-8 max-w-md text-slate-700">
-            <h1 className="text-center text-3xl font-bold">Edit post</h1>
-            <form
-                className="mt-8"
-                onKeyDown={(e) => e.key !== 'Enter'}
-                onSubmit={onSubmit}
-            >
+        <div className="mx-auto mb-8 min-w-[40rem] max-w-2xl">
+            <form onKeyDown={(e) => e.key !== 'Enter'} onSubmit={onSubmit}>
                 <div>
-                    <label htmlFor="title">Title</label>
-                    <input
-                        type="text"
-                        id="title"
+                    <TextareaAutosize
+                        rows={1}
                         placeholder="Post title"
-                        className="mt-2 w-full rounded border border-slate-500 px-4 py-2"
+                        className="w-full overflow-y-hidden text-3xl font-semibold focus:outline-none"
                         {...register('title', {
                             required: 'Title is required',
                         })}
@@ -87,13 +81,11 @@ const Form = ({ post }: { post: PostProps }) => {
                 </div>
 
                 <div className="mt-6">
-                    <label htmlFor="body">Body</label>
-                    <textarea
-                        id="body"
+                    <TextareaAutosize
                         placeholder="Post body"
-                        className="mt-2 h-32 w-full rounded border border-slate-500 px-4 py-2"
+                        className="min-h-64 w-full overflow-y-hidden focus:outline-none"
                         {...register('body', {
-                            required: 'Post body cannot be empty',
+                            required: 'Body is required',
                         })}
                     />
                     {errors.body && (
@@ -103,8 +95,9 @@ const Form = ({ post }: { post: PostProps }) => {
                     )}
                 </div>
 
+                <TagInput {...{ tags, setTags }} />
+
                 <div className="mt-6">
-                    <label htmlFor="thumbnail">Thumbnail</label>
                     <input
                         type="file"
                         id="thumbnail"
@@ -142,13 +135,13 @@ const Form = ({ post }: { post: PostProps }) => {
                         </div>
                     </div>
                 </div>
-                <TagInput {...{ tags, setTags }} />
+
                 <div className="mt-6">
                     <div className="grid grid-cols-2 items-center gap-2">
                         <button
                             type="submit"
                             disabled={shouldDisableSubmit}
-                            className="rounded border border-gray-300 bg-blue-500 px-6 py-2 font-semibold text-white enabled:hover:bg-blue-400"
+                            className="rounded bg-green-600 px-8 py-3 font-semibold text-white enabled:hover:bg-green-500 disabled:bg-green-500"
                             title={
                                 shouldDisableSubmit
                                     ? 'You have not made any changes to the post'
@@ -159,7 +152,7 @@ const Form = ({ post }: { post: PostProps }) => {
                         </button>
                         <button
                             type="button"
-                            className="rounded border border-gray-300 px-6 py-2 font-semibold text-blue-500 hover:bg-gray-100"
+                            className="rounded border border-gray-300 px-8 py-3 font-semibold text-green-600 hover:bg-green-100"
                             onClick={() => router.back()}
                         >
                             Cancel
