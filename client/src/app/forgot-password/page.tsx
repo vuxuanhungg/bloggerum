@@ -1,8 +1,10 @@
 'use client'
 import { InboxArrowDownIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useAuthContext } from '../context/AuthContext'
 
 const ForgotPassword = () => {
     const [messageUrl, setMessageUrl] = useState<string | null>(null)
@@ -31,6 +33,14 @@ const ForgotPassword = () => {
         const { messageUrl } = await res.json()
         setMessageUrl(messageUrl)
     })
+
+    const router = useRouter()
+    const { user } = useAuthContext()
+    useEffect(() => {
+        if (user) {
+            router.push('/')
+        }
+    }, [router, user])
 
     return (
         <div className="container mx-auto max-w-md lg:min-w-[28rem]">

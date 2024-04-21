@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import { useAuthContext } from '../context/AuthContext'
@@ -13,12 +14,13 @@ type Inputs = {
 
 const Login = () => {
     const router = useRouter()
-    const { setUser } = useAuthContext()
+    const { user, setUser } = useAuthContext()
     const {
         register,
         handleSubmit,
         formState: { errors },
     } = useForm<Inputs>()
+
     const onSubmit = handleSubmit(async (formData) => {
         const res = await fetch('http://localhost:8080/api/users/login', {
             method: 'POST',
@@ -38,6 +40,12 @@ const Login = () => {
         setUser(user)
         router.replace('/')
     })
+
+    useEffect(() => {
+        if (user) {
+            router.push('/')
+        }
+    }, [router, user])
 
     return (
         <div className="container mx-auto max-w-md lg:min-w-[28rem]">
