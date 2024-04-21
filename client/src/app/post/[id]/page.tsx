@@ -85,7 +85,7 @@ const DetailPost = async ({ params }: { params: { id: string } }) => {
                                 <li key={tag}>
                                     <Link
                                         href={`/?tag=${tag}`}
-                                        className="rounded border px-4 py-2"
+                                        className="rounded-lg border px-4 py-2"
                                     >
                                         {tag}
                                     </Link>

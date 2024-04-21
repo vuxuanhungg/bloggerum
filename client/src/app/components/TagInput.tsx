@@ -49,7 +49,7 @@ const TagInput = ({
     return (
         <div className="mt-6">
             {/* <label htmlFor="tags">Tags</label> */}
-            <div className="mt-2 flex flex-wrap items-center gap-2 rounded">
+            <div className="mt-2 flex flex-wrap items-center gap-2">
                 {tags.map((tag) => (
                     <span
                         key={tag}
