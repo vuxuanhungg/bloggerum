@@ -50,16 +50,24 @@ const ChangePassword = ({
     })
 
     return (
-        <div className="mx-auto max-w-md text-slate-700">
+        <div className="container mx-auto max-w-md lg:min-w-[28rem]">
             <h1 className="text-center text-3xl font-bold">Change password</h1>
+            <p className="mt-2 text-center text-sm text-gray-500">
+                Enter your new password
+            </p>
             <form className="mt-8" onSubmit={onSubmit}>
                 <div>
-                    <label htmlFor="password">New password</label>
+                    <label
+                        htmlFor="password"
+                        className="text-sm font-medium text-gray-700"
+                    >
+                        New password
+                    </label>
                     <input
                         type="password"
                         id="password"
                         placeholder="New password"
-                        className="mt-2 w-full rounded border border-slate-500 px-4 py-2"
+                        className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
                         {...register('password', {
                             required: 'Password is required',
                         })}
@@ -71,12 +79,17 @@ const ChangePassword = ({
                     )}
                 </div>
                 <div className="mt-6">
-                    <label htmlFor="confirmPassword">Confirm password</label>
+                    <label
+                        htmlFor="confirmPassword"
+                        className="text-sm font-medium text-gray-700"
+                    >
+                        Confirm password
+                    </label>
                     <input
                         type="password"
                         id="confirmPassword"
                         placeholder="Confirm password"
-                        className="mt-2 w-full rounded border border-slate-500 px-4 py-2"
+                        className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
                         {...register('confirmPassword', {
                             required: 'Please confirm your password',
                             validate: (value) => {
@@ -94,7 +107,7 @@ const ChangePassword = ({
                 <div className="mt-6">
                     <button
                         type="submit"
-                        className="w-full rounded bg-slate-200 px-8 py-3"
+                        className="w-full rounded bg-black px-8 py-3 font-semibold text-white"
                     >
                         Save
                     </button>

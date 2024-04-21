@@ -49,6 +49,7 @@ const Header = () => {
         '/create-post',
         '/edit-post',
         '/forgot-password',
+        '/change-password',
     ]
     const searchBoxHidden = searchBoxHiddenPaths.some((path) =>
         pathname.includes(path)
