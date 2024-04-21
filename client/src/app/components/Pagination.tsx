@@ -1,4 +1,5 @@
 'use client'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
 import { usePathname, useSearchParams } from 'next/navigation'
 
@@ -32,7 +33,7 @@ const Pagination = ({
     }
 
     return (
-        <nav className="mx-auto mt-8">
+        <nav className="mx-auto mt-12">
             <ul className="flex items-center justify-center gap-1">
                 <li
                     className={
@@ -43,8 +44,9 @@ const Pagination = ({
                 >
                     <Link
                         href={`${pathname}${updateSearchParams({ page: null, per_page: perPage })}`}
-                        className="rounded border border-slate-400 px-4 py-2"
+                        className="group flex items-center gap-1 rounded-lg border border-gray-300 px-4 py-2 transition-colors hover:bg-black hover:text-white"
                     >
+                        <ChevronLeftIcon className="h-5 w-5 text-gray-500 transition-colors group-hover:text-white" />
                         First
                     </Link>
                 </li>
@@ -57,7 +59,7 @@ const Pagination = ({
                 >
                     <Link
                         href={`${pathname}${updateSearchParams({ page: currentPage - 1, per_page: perPage })}`}
-                        className="rounded border border-slate-400 px-4 py-2"
+                        className="inline-block rounded-lg border border-gray-300 px-4 py-2 transition-colors hover:bg-black hover:text-white"
                     >
                         Prev
                     </Link>
@@ -71,7 +73,7 @@ const Pagination = ({
                 >
                     <Link
                         href={`${pathname}${updateSearchParams({ page: currentPage + 1, per_page: perPage })}`}
-                        className="rounded border border-slate-400 px-4 py-2"
+                        className="inline-block rounded-lg border border-gray-300 px-4 py-2 transition-colors hover:bg-black hover:text-white"
                     >
                         Next
                     </Link>
@@ -85,9 +87,10 @@ const Pagination = ({
                 >
                     <Link
                         href={`${pathname}${updateSearchParams({ page: totalPages, per_page: perPage })}`}
-                        className="rounded border border-slate-400 px-4 py-2"
+                        className="group flex items-center gap-1 rounded-lg border border-gray-300 px-4 py-2 transition-colors hover:bg-black hover:text-white"
                     >
                         Last
+                        <ChevronRightIcon className="h-5 w-5 text-gray-500 transition-colors group-hover:text-white" />
                     </Link>
                 </li>
             </ul>
