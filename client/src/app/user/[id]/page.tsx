@@ -2,6 +2,7 @@ import Pagination from '~/app/components/Pagination'
 import Post from '~/app/components/Post'
 import { PostProps } from '~/app/types'
 import { PostActions } from './Actions'
+import UserHeader from './UserHeader'
 
 const UserPosts = async ({
     params,
@@ -21,6 +22,7 @@ const UserPosts = async ({
     return (
         <div className="container my-8">
             <div className="mt-8">
+                <UserHeader user={posts[0].user} />
                 {totalPages === 0 && <div>No posts yet</div>}
                 {totalPages > 0 && (
                     <>

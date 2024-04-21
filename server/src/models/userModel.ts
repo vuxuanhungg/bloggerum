@@ -7,6 +7,7 @@ interface IUser {
     password: string
     avatar: string | null
     allAvatars: string[]
+    bio: string
 }
 
 interface IUserMethods {
@@ -22,6 +23,10 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
         password: { type: String, required: true },
         avatar: { type: String, default: null },
         allAvatars: [{ type: String }],
+        bio: {
+            type: String,
+            default: 'The quick brown fox jumps over the lazy dog.',
+        },
     },
     {
         timestamps: true,

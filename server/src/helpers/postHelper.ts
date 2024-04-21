@@ -29,6 +29,7 @@ export const commonPostAggregationPipelineStages: Record<string, any> = {
                 _id: 1,
                 name: 1,
                 avatar: 1,
+                bio: 1,
             },
             tags: 1,
             updatedAt: 1,
