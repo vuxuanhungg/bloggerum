@@ -84,7 +84,7 @@ export const getPostsBySearchPipeline = (
             text: {
                 query,
                 path: ['title', 'tags', 'body'],
-                fuzzy: {},
+                fuzzy: { maxEdits: 1 },
             },
         },
     },
