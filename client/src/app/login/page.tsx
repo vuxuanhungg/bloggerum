@@ -40,7 +40,7 @@ const Login = () => {
     })
 
     return (
-        <div className="mx-auto min-w-[28rem] max-w-md">
+        <div className="container mx-auto max-w-md lg:min-w-[28rem]">
             <h1 className="text-center text-3xl font-bold">Welcome back!</h1>
             <p className="mt-2 text-center text-sm text-gray-500">
                 Sign in to start creating.

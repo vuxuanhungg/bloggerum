@@ -3,6 +3,7 @@ import {
     ArrowLeftEndOnRectangleIcon,
     ChevronDownIcon,
     PencilSquareIcon,
+    PlusIcon,
     UserIcon,
 } from '@heroicons/react/24/outline'
 import Image from 'next/image'
@@ -51,8 +52,10 @@ const UserPanel = () => {
                         />
                     )}
                 </div>
-                <span className="ml-1 text-gray-700">{user.name}</span>
-                <ChevronDownIcon className="h-5 w-5 text-gray-500" />
+                <span className="ml-1 hidden font-medium text-gray-700 lg:inline-block">
+                    {user.name}
+                </span>
+                <ChevronDownIcon className="h-4 w-4 text-gray-500" />
             </Menu.Button>
             <Transition
                 as={Fragment}
@@ -92,6 +95,19 @@ const UserPanel = () => {
                         </div>
                     </div>
                     <div className="p-1">
+                        <Menu.Item as="div" className="lg:hidden">
+                            {({ active }) => (
+                                <Link
+                                    href="/create-post"
+                                    className={`${
+                                        active ? 'bg-gray-200' : 'text-gray-900'
+                                    } flex w-full items-center gap-3 rounded-md px-4 py-3 text-sm`}
+                                >
+                                    <PlusIcon className="h-5 w-5 text-gray-500" />
+                                    Create Post
+                                </Link>
+                            )}
+                        </Menu.Item>
                         <Menu.Item>
                             {({ active }) => (
                                 <Link

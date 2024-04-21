@@ -25,12 +25,12 @@ const SearchBox = ({ hidden = false }: { hidden?: boolean }) => {
     return (
         <form
             onSubmit={onSubmit}
-            className="flex items-center overflow-hidden rounded-full border pl-1"
+            className="flex items-center justify-between overflow-hidden rounded-full border pl-1 text-sm"
         >
             <input
                 type="text"
                 placeholder="Search"
-                className="px-4 py-2 focus:outline-none"
+                className="w-full px-4 py-2 focus:outline-none"
                 {...register('query')}
             />
             <button className="px-3 py-2">
@@ -61,10 +61,17 @@ const Header = () => {
             <Link href="/" className="text-3xl font-semibold">
                 <Image
                     src="/logo.png"
-                    width={465}
-                    height={160}
+                    width={98}
+                    height={99}
                     alt=""
-                    className="-ml-3 w-52"
+                    className="w-10 sm:w-12 lg:hidden"
+                />
+                <Image
+                    src="/logo-full.png"
+                    width={371}
+                    height={100}
+                    alt=""
+                    className="hidden w-48 lg:block"
                 />
             </Link>
             <SearchBox hidden={searchBoxHidden} />
@@ -73,7 +80,7 @@ const Header = () => {
                 <nav>
                     {!user && (
                         <ul className="flex items-center">
-                            <li>
+                            <li className="hidden lg:block">
                                 <Link
                                     href="/register"
                                     className="px-8 py-3 text-sm font-medium text-gray-700 hover:text-green-600 hover:underline"
@@ -95,7 +102,7 @@ const Header = () => {
                         <div className="flex items-center gap-3">
                             <Link
                                 href="/create-post"
-                                className="rounded-full border p-[10px]"
+                                className="hidden rounded-full border p-[10px] lg:block"
                             >
                                 <PencilSquareIcon className="h-5 w-5 text-gray-500" />
                             </Link>

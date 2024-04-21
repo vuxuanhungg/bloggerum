@@ -52,7 +52,7 @@ const CreatePost = () => {
     })
 
     return (
-        <div className="mx-auto mb-8 min-w-[40rem] max-w-2xl">
+        <div className="container mx-auto mb-8 max-w-2xl lg:min-w-[40rem]">
             <form onKeyDown={(e) => e.key !== 'Enter'} onSubmit={onSubmit}>
                 <div>
                     <TextareaAutosize

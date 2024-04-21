@@ -5,7 +5,7 @@ import { PostProps } from '~/app/types'
 const UserHeader = ({ user }: { user: PostProps['user'] }) => {
     return (
         <div className="flex justify-center">
-            <div className="inline-flex items-center justify-center gap-6 rounded-xl border px-10 py-4">
+            <div className="inline-flex items-center justify-center gap-6 rounded-xl border px-6 py-4 lg:px-10">
                 <div className="relative flex h-40 w-40 items-center justify-center overflow-hidden rounded-full bg-slate-500">
                     {!user.avatar && (
                         <p className="font-semibold text-white">

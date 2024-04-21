@@ -278,7 +278,7 @@ const Form = () => {
     })
 
     return (
-        <div className="mx-auto min-w-[28rem] max-w-md">
+        <div className="container mx-auto max-w-md lg:min-w-[28rem]">
             <h1 className="text-center text-3xl font-bold">Update profile</h1>
             <FormProvider {...methods}>
                 <form className="mt-8" onSubmit={onSubmit}>

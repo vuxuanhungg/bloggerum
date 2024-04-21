@@ -13,7 +13,7 @@ export const PostActions = ({ post }: { post: PostProps }) => {
     }
 
     return (
-        <div className="absolute right-2 top-2 hidden group-hover:block">
+        <div className="absolute right-2 top-2 group-hover:block lg:hidden">
             <div className="flex items-center gap-1">
                 <Link
                     href={`/edit-post/${post._id}`}

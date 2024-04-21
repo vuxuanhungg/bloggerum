@@ -34,7 +34,7 @@ const Pagination = ({
 
     return (
         <nav className="mx-auto mt-12">
-            <ul className="flex items-center justify-center gap-1">
+            <ul className="flex items-center justify-center gap-1 text-sm">
                 <li
                     className={
                         currentPage === 1

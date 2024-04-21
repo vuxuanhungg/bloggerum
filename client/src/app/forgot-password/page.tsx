@@ -1,5 +1,6 @@
 'use client'
 import { InboxArrowDownIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -32,7 +33,7 @@ const ForgotPassword = () => {
     })
 
     return (
-        <div className="mx-auto my-8 min-w-[28rem] max-w-md">
+        <div className="container mx-auto max-w-md lg:min-w-[28rem]">
             {!isSubmitSuccessful && (
                 <>
                     <h1 className="text-center text-3xl font-bold">
@@ -79,6 +80,14 @@ const ForgotPassword = () => {
                             >
                                 Reset password
                             </button>
+                        </div>
+                        <div className="mt-6">
+                            <Link
+                                href="/login"
+                                className="block text-center text-green-600 underline"
+                            >
+                                Back to login
+                            </Link>
                         </div>
                     </form>
                 </>
