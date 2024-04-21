@@ -258,6 +258,7 @@ const Form = () => {
         } else {
             // Case 2: Update other info
             data.append('name', formData.name)
+            data.append('bio', formData.bio)
         }
 
         const res = await fetch('http://localhost:8080/api/users/profile', {
@@ -287,7 +288,7 @@ const Form = () => {
                     <div className="mt-6">
                         <label
                             htmlFor="name"
-                            className="font-medium text-gray-700"
+                            className="text-sm font-medium text-gray-700"
                         >
                             Username
                         </label>
@@ -313,7 +314,7 @@ const Form = () => {
                     <div className="mt-6">
                         <label
                             htmlFor="bio"
-                            className="font-medium text-gray-700"
+                            className="text-sm font-medium text-gray-700"
                         >
                             Bio
                         </label>

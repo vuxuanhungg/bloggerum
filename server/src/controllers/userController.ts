@@ -94,6 +94,8 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 export const updateUserProfile = asyncHandler(async (req, res) => {
     const user = req.user!
 
+    console.log(req.body)
+
     if (req.file) {
         const { imageUrl } = await uploadImage(req.file)
         user.avatar = imageUrl
@@ -102,8 +104,9 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
         user.avatar = null
     } else {
         user.name = req.body.name || user.name
-        user.email = req.body.email || user.email
-        user.password = req.body.password || user.password
+        user.bio = req.body.bio || user.bio
+        // user.email = req.body.email || user.email
+        // user.password = req.body.password || user.password
     }
 
     const updatedUser = await user.save()
@@ -113,6 +116,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
         name: updatedUser.name,
         email: updatedUser.email,
         avatar: updatedUser.avatar,
+        bio: updatedUser.bio,
     })
 })
 
@@ -170,5 +174,7 @@ export const changePassword = asyncHandler(async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        avatar: user.avatar,
+        bio: user.bio,
     })
 })
