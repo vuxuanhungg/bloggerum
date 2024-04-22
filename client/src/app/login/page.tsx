@@ -19,7 +19,11 @@ const Login = () => {
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<Inputs>()
+    } = useForm<Inputs>({
+        defaultValues: {
+            shouldRememberUser: true,
+        },
+    })
 
     const onSubmit = handleSubmit(async (formData) => {
         const res = await fetch('http://localhost:8080/api/users/login', {
