@@ -1,7 +1,8 @@
 'use client'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import Spinner from '../components/Spinner'
@@ -23,6 +24,8 @@ const Register = () => {
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<Inputs>()
+
+    const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
     const onSubmit = handleSubmit(async (formData) => {
         const res = await fetch('http://localhost:8080/api/users', {
@@ -117,15 +120,30 @@ const Register = () => {
                     >
                         Password
                     </label>
-                    <input
-                        type="password"
-                        id="password"
-                        placeholder="Your password"
-                        className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
-                        {...register('password', {
-                            required: 'Password is required',
-                        })}
-                    />
+                    <div className="mt-2 flex items-center rounded border shadow-sm focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-green-600">
+                        <input
+                            type={isPasswordVisible ? 'text' : 'password'}
+                            id="password"
+                            placeholder="Your password"
+                            className="flex-1 px-4 py-2 focus:outline-none"
+                            {...register('password', {
+                                required: 'Password is required',
+                            })}
+                        />
+                        <button
+                            type="button"
+                            className="rounded px-4 py-2 focus:outline-green-600"
+                            onClick={() =>
+                                setIsPasswordVisible((prev) => !prev)
+                            }
+                        >
+                            {isPasswordVisible ? (
+                                <EyeIcon className="h-4 w-4" />
+                            ) : (
+                                <EyeSlashIcon className="h-4 w-4" />
+                            )}
+                        </button>
+                    </div>
                     {errors.password && (
                         <p role="alert" className="mt-2 text-sm text-red-500">
                             {errors.password.message}
@@ -139,19 +157,34 @@ const Register = () => {
                     >
                         Confirm password
                     </label>
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        placeholder="Confirm password"
-                        className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600"
-                        {...register('confirmPassword', {
-                            required: 'Please confirm your password',
-                            validate: (value) => {
-                                if (value !== watch('password'))
-                                    return 'Your password do not match'
-                            },
-                        })}
-                    />
+                    <div className="mt-2 flex items-center rounded border shadow-sm focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-green-600">
+                        <input
+                            type={isPasswordVisible ? 'text' : 'password'}
+                            id="confirmPassword"
+                            placeholder="Confirm password"
+                            className="flex-1 px-4 py-2 focus:outline-none"
+                            {...register('confirmPassword', {
+                                required: 'Please confirm your password',
+                                validate: (value) => {
+                                    if (value !== watch('password'))
+                                        return 'Your password do not match'
+                                },
+                            })}
+                        />
+                        <button
+                            type="button"
+                            className="rounded px-4 py-2 focus:outline-green-600"
+                            onClick={() =>
+                                setIsPasswordVisible((prev) => !prev)
+                            }
+                        >
+                            {isPasswordVisible ? (
+                                <EyeIcon className="h-4 w-4" />
+                            ) : (
+                                <EyeSlashIcon className="h-4 w-4" />
+                            )}
+                        </button>
+                    </div>
                     {errors.confirmPassword && (
                         <p role="alert" className="mt-2 text-sm text-red-500">
                             {errors.confirmPassword.message}
