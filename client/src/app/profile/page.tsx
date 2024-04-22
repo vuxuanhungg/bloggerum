@@ -244,7 +244,7 @@ const Form = () => {
         watch,
         resetField,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = methods
 
     const onSubmit = handleSubmit(async (formData) => {
@@ -344,7 +344,12 @@ const Form = () => {
                             }
                             className="w-full rounded bg-green-600 px-8 py-3 font-semibold text-white enabled:hover:bg-green-500 disabled:bg-green-500"
                         >
-                            Save changes
+                            <div className="flex items-center justify-center gap-2">
+                                {isSubmitting && (
+                                    <Spinner size="sm" color="white" />
+                                )}
+                                Save changes
+                            </div>
                         </button>
                     </div>
                 </form>

@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import { toast } from 'react-toastify'
 import { revalidatePosts } from '~/app/actions'
+import Spinner from '~/app/components/Spinner'
 import TagInput from '~/app/components/TagInput'
 import { PostProps } from '~/app/types'
 import { compareArrays } from '~/app/utils'
@@ -25,7 +26,7 @@ const Form = ({ post }: { post: PostProps }) => {
         register,
         watch,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<Inputs>({
         defaultValues: {
             title: post.title,
@@ -148,8 +149,14 @@ const Form = ({ post }: { post: PostProps }) => {
                                     : ''
                             }
                         >
-                            Save changes
+                            <div className="flex items-center justify-center gap-2">
+                                {isSubmitting && (
+                                    <Spinner size="sm" color="white" />
+                                )}
+                                Save changes
+                            </div>
                         </button>
+
                         <button
                             type="button"
                             className="rounded border border-gray-300 px-8 py-3 font-semibold text-green-600 hover:bg-green-100"

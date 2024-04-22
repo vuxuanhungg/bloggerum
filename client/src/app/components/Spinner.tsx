@@ -1,8 +1,15 @@
 import React from 'react'
 
 type Size = 'sm' | 'md' | 'lg'
+type Color = 'green' | 'white'
 
-const Spinner = ({ size = 'md' }: { size: Size }) => {
+const Spinner = ({
+    size = 'md',
+    color = 'green',
+}: {
+    size?: Size
+    color?: Color
+}) => {
     let sizeClasses
     switch (size) {
         case 'sm':
@@ -18,10 +25,12 @@ const Spinner = ({ size = 'md' }: { size: Size }) => {
             break
     }
 
+    const colorClasses = color === 'green' ? 'text-green-600' : 'text-white'
+
     return (
         <div role="status">
             <svg
-                className={`${sizeClasses} animate-spin text-green-600`}
+                className={`${sizeClasses} ${colorClasses} animate-spin`}
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"

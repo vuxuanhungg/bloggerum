@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import { toast } from 'react-toastify'
 import { revalidatePosts } from '../actions'
+import Spinner from '../components/Spinner'
 import TagInput from '../components/TagInput'
 import { PostProps } from '../types'
 
@@ -24,7 +25,7 @@ const CreatePost = () => {
         register,
         watch,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<Inputs>()
 
     const thumbnail = watch('thumbnail')
@@ -135,7 +136,12 @@ const CreatePost = () => {
                         type="submit"
                         className="rounded bg-green-600 px-12 py-3 text-white hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
                     >
-                        <div className="flex items-center gap-2">Create</div>
+                        <div className="flex items-center justify-center gap-2">
+                            {isSubmitting && (
+                                <Spinner size="sm" color="white" />
+                            )}
+                            Create
+                        </div>
                     </button>
                 </div>
             </form>

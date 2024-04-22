@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import Spinner from '../components/Spinner'
 import { useAuthContext } from '../context/AuthContext'
 
 type Inputs = {
@@ -20,7 +21,7 @@ const Register = () => {
         register,
         watch,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<Inputs>()
 
     const onSubmit = handleSubmit(async (formData) => {
@@ -40,6 +41,7 @@ const Register = () => {
 
         const user = await res.json()
         setUser(user)
+        toast.info(`Welcome to Bloggerum, ${user.name}!`)
         router.replace('/')
     })
 
@@ -159,8 +161,9 @@ const Register = () => {
                 <div className="mt-6">
                     <button
                         type="submit"
-                        className="w-full rounded bg-black px-8 py-3 font-semibold text-white"
+                        className="flex w-full items-center justify-center gap-2 rounded bg-black px-8 py-3 font-semibold text-white"
                     >
+                        {isSubmitting && <Spinner size="sm" color="white" />}
                         Register
                     </button>
                 </div>

@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import Spinner from '../components/Spinner'
 import { useAuthContext } from '../context/AuthContext'
+import { UserProps } from '../types'
 
 type Inputs = {
     email: string
@@ -18,7 +20,7 @@ const Login = () => {
     const {
         register,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<Inputs>({
         defaultValues: {
             shouldRememberUser: true,
@@ -40,8 +42,9 @@ const Login = () => {
             return
         }
 
-        const user = await res.json()
+        const user: UserProps = await res.json()
         setUser(user)
+        toast.info(`Welcome back, ${user.name}!`)
         router.replace('/')
     })
 
@@ -135,8 +138,9 @@ const Login = () => {
                 <div className="mt-6">
                     <button
                         type="submit"
-                        className="w-full rounded bg-black px-8 py-3 font-semibold text-white"
+                        className="flex w-full items-center justify-center gap-2 rounded bg-black px-8 py-3 font-semibold text-white"
                     >
+                        {isSubmitting && <Spinner size="sm" color="white" />}
                         Login
                     </button>
                 </div>
