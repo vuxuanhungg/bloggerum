@@ -54,6 +54,7 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                             src={user.avatar}
                             alt="profile picture"
                             fill
+                            sizes="4rem"
                             className="object-cover"
                         />
                     )}
@@ -117,6 +118,7 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                                         src={user.avatar}
                                         alt="profile picture"
                                         fill
+                                        sizes="16rem"
                                         className="object-cover"
                                     />
                                 )}
@@ -134,6 +136,7 @@ const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
                                 src={URL.createObjectURL(watch('avatar')[0])}
                                 alt="profile picture"
                                 fill
+                                sizes="16rem"
                                 className="object-cover"
                             />
                         )}

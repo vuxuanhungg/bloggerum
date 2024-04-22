@@ -48,6 +48,7 @@ const UserPanel = () => {
                             src={user.avatar}
                             alt="profile picture"
                             fill
+                            sizes="2.25rem"
                             className="object-cover"
                         />
                     )}
@@ -80,6 +81,7 @@ const UserPanel = () => {
                                         src={user.avatar}
                                         alt="profile picture"
                                         fill
+                                        sizes="3rem"
                                         className="object-cover"
                                     />
                                 )}

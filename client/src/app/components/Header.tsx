@@ -7,9 +7,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
+import logoWithText from '../../../public/logo-full.png'
+import logo from '../../../public/logo.png'
 import { useAuthContext } from '../context/AuthContext'
-import UserPanel from './UserPanel'
 import Spinner from './Spinner'
+import UserPanel from './UserPanel'
 
 const SearchBox = ({ hidden = false }: { hidden?: boolean }) => {
     const router = useRouter()
@@ -64,16 +66,12 @@ const Header = () => {
         >
             <Link href="/" className="text-3xl font-semibold">
                 <Image
-                    src="/logo.png"
-                    width={98}
-                    height={99}
+                    src={logo}
                     alt="bloggerum logo"
                     className="w-10 sm:w-12 lg:hidden"
                 />
                 <Image
-                    src="/logo-full.png"
-                    width={371}
-                    height={100}
+                    src={logoWithText}
                     alt="bloggerum logo with text"
                     className="hidden w-48 lg:block"
                 />

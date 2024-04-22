@@ -17,6 +17,8 @@ const UserHeader = ({ user }: { user: PostProps['user'] }) => {
                             src={user.avatar}
                             alt="profile picture"
                             fill
+                            sizes="10rem"
+                            priority
                             className="object-cover"
                         />
                     )}

@@ -125,6 +125,7 @@ const CreatePost = () => {
                                 src={URL.createObjectURL(thumbnail[0])}
                                 alt={thumbnail[0].name}
                                 fill
+                                sizes="40rem"
                                 className="object-cover"
                             />
                         </div>

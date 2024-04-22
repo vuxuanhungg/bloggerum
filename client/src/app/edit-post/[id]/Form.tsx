@@ -119,6 +119,7 @@ const Form = ({ post }: { post: PostProps }) => {
                                 }
                                 alt=""
                                 fill
+                                sizes="40rem"
                                 className="object-cover transition-[filter] group-hover:brightness-75"
                             />
                             <button

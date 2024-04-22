@@ -51,6 +51,7 @@ const DetailPost = async ({ params }: { params: { id: string } }) => {
                                     src={user.avatar}
                                     alt="profile picture"
                                     fill
+                                    sizes="2rem"
                                     className="object-cover"
                                 />
                             )}
@@ -73,6 +74,7 @@ const DetailPost = async ({ params }: { params: { id: string } }) => {
                         src={post.thumbnail}
                         alt=""
                         fill
+                        priority
                         className="object-cover"
                     />
                 </div>
