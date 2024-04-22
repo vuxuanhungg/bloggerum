@@ -15,6 +15,7 @@ import { toast } from 'react-toastify'
 import { revalidatePosts } from '../actions'
 import Modal from '../components/Modal'
 import { useAuthContext } from '../context/AuthContext'
+import Spinner from '../components/Spinner'
 
 interface Inputs {
     name: string
@@ -355,7 +356,12 @@ const Form = () => {
 const Profile = () => {
     const { isLoading } = useAuthContext()
 
-    if (isLoading) return <p>Loading...</p>
+    if (isLoading)
+        return (
+            <div className="flex justify-center">
+                <Spinner size="lg" />
+            </div>
+        )
 
     return <Form />
 }
