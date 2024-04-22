@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import Spinner from '../components/Spinner'
 import { useAuthContext } from '../context/AuthContext'
 
 const ForgotPassword = () => {
@@ -86,8 +87,11 @@ const ForgotPassword = () => {
                             <button
                                 type="submit"
                                 disabled={isSubmitting}
-                                className="w-full rounded bg-black px-8 py-3 text-white"
+                                className="flex w-full items-center justify-center gap-2 rounded bg-black px-8 py-3 font-semibold text-white"
                             >
+                                {isSubmitting && (
+                                    <Spinner size="sm" color="white" />
+                                )}
                                 Reset password
                             </button>
                         </div>
