@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import Spinner from '~/app/components/Spinner'
 import { useAuthContext } from '~/app/context/AuthContext'
 
 type Inputs = {
@@ -22,7 +23,7 @@ const ChangePassword = ({
         register,
         watch,
         handleSubmit,
-        formState: { errors },
+        formState: { errors, isSubmitting },
     } = useForm<Inputs>()
 
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
@@ -142,8 +143,10 @@ const ChangePassword = ({
                 <div className="mt-6">
                     <button
                         type="submit"
-                        className="w-full rounded bg-black px-8 py-3 font-semibold text-white"
+                        disabled={isSubmitting}
+                        className="flex w-full items-center justify-center gap-2 rounded bg-black px-8 py-3 font-semibold text-white"
                     >
+                        {isSubmitting && <Spinner size="sm" color="white" />}
                         Save
                     </button>
                 </div>

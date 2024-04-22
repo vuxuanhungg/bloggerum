@@ -157,6 +157,7 @@ const Login = () => {
                 <div className="mt-6">
                     <button
                         type="submit"
+                        disabled={isSubmitting}
                         className="flex w-full items-center justify-center gap-2 rounded bg-black px-8 py-3 font-semibold text-white"
                     >
                         {isSubmitting && <Spinner size="sm" color="white" />}

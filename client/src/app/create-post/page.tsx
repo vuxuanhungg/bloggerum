@@ -134,6 +134,7 @@ const CreatePost = () => {
                 <div className="mt-6">
                     <button
                         type="submit"
+                        disabled={isSubmitting}
                         className="rounded bg-green-600 px-12 py-3 text-white hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
                     >
                         <div className="flex items-center justify-center gap-2">

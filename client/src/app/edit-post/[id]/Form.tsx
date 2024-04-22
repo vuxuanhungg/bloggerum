@@ -35,10 +35,11 @@ const Form = ({ post }: { post: PostProps }) => {
     })
 
     const shouldDisableSubmit =
-        watch('title') === post.title &&
-        watch('body') === post.body &&
-        watch('thumbnail')?.length === 0 &&
-        compareArrays(tags, post.tags)
+        (watch('title') === post.title &&
+            watch('body') === post.body &&
+            watch('thumbnail')?.length === 0 &&
+            compareArrays(tags, post.tags)) ||
+        isSubmitting
 
     const onSubmit = handleSubmit(async (formData) => {
         const data = new FormData()

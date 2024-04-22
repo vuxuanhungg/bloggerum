@@ -339,8 +339,9 @@ const Form = () => {
                         <button
                             type="submit"
                             disabled={
-                                watch('name') === user?.name &&
-                                watch('bio') === user?.bio
+                                (watch('name') === user?.name &&
+                                    watch('bio') === user?.bio) ||
+                                isSubmitting
                             }
                             className="w-full rounded bg-green-600 px-8 py-3 font-semibold text-white enabled:hover:bg-green-500 disabled:bg-green-500"
                         >
