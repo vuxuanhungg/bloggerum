@@ -94,8 +94,6 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 export const updateUserProfile = asyncHandler(async (req, res) => {
     const user = req.user!
 
-    console.log(req.body)
-
     if (req.file) {
         const { imageUrl } = await uploadImage(req.file)
         user.avatar = imageUrl

@@ -40,7 +40,6 @@ userSchema.pre('save', async function (next) {
         return next()
     }
 
-    console.log('password modified...')
     const hashedPassword = await bcrypt.hash(this.password, 10)
     this.password = hashedPassword
 })
