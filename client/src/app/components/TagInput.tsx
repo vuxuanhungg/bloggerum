@@ -69,7 +69,7 @@ const TagInput = ({
                     </span>
                 ))}
 
-                <div className="relative w-32 flex-auto">
+                <div className="relative z-10 w-32 flex-auto">
                     <Combobox
                         value=""
                         onChange={(value) => {
@@ -117,7 +117,7 @@ const TagInput = ({
                         />
 
                         {filteredSuggestions.length > 0 && (
-                            <div className="absolute -left-1 top-full mt-2 w-80 overflow-hidden rounded bg-white shadow">
+                            <div className="absolute -left-1 top-full mt-2 w-40 overflow-hidden rounded bg-white shadow sm:w-64 md:w-72">
                                 <Combobox.Options className="rounded border-2 border-gray-300">
                                     {filteredSuggestions.map((tag) => (
                                         <Combobox.Option
