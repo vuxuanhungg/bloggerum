@@ -28,7 +28,7 @@ const RelatedPosts = ({ posts }: { posts: PostProps[] }) => {
 }
 
 const DetailPost = async ({ params }: { params: { id: string } }) => {
-    const res = await fetch(`http://localhost:8080/api/posts/${params.id}`)
+    const res = await fetch(`${process.env.API_BASE_URL}/posts/${params.id}`)
     const post: PostProps = await res.json()
     const { user } = post
 

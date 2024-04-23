@@ -5,10 +5,13 @@ import { revalidatePosts } from '~/app/actions'
 
 const RemovePostButton = ({ postId }: { postId: string }) => {
     const removePost = async (id: string) => {
-        const res = await fetch(`http://localhost:8080/api/posts/${id}`, {
-            method: 'DELETE',
-            credentials: 'include',
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/posts/${id}`,
+            {
+                method: 'DELETE',
+                credentials: 'include',
+            }
+        )
 
         if (!res.ok) {
             toast.error('Failed to remove post. Try again.')

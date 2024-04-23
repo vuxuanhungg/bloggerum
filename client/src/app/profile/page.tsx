@@ -265,11 +265,14 @@ const Form = () => {
             data.append('bio', formData.bio)
         }
 
-        const res = await fetch('http://localhost:8080/api/users/profile', {
-            method: 'PUT',
-            body: data,
-            credentials: 'include',
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/profile`,
+            {
+                method: 'PUT',
+                body: data,
+                credentials: 'include',
+            }
+        )
 
         if (!res.ok) {
             throw new Error('Server error')

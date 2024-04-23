@@ -30,7 +30,7 @@ const ChangePassword = ({
 
     const onSubmit = handleSubmit(async (formData) => {
         const res = await fetch(
-            'http://localhost:8080/api/users/change-password',
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/change-password`,
             {
                 method: 'POST',
                 headers: {

@@ -14,7 +14,7 @@ const UserPosts = async ({
     const page = Number(searchParams.page) || 1
     const perPage = Number(searchParams.per_page)
     const res = await fetch(
-        `http://localhost:8080/api/posts?userId=${params.id}`
+        `${process.env.API_BASE_URL}/posts?userId=${params.id}`
     )
     const { posts, totalPages }: { posts: PostProps[]; totalPages: number } =
         await res.json()

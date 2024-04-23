@@ -37,11 +37,14 @@ const CreatePost = () => {
         data.append('thumbnail', formData.thumbnail[0])
         data.append('tags', JSON.stringify(tags))
 
-        const res = await fetch('http://localhost:8080/api/posts', {
-            method: 'POST',
-            body: data,
-            credentials: 'include',
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/posts`,
+            {
+                method: 'POST',
+                body: data,
+                credentials: 'include',
+            }
+        )
         if (!res.ok) {
             return toast.error('Error occurred')
         }

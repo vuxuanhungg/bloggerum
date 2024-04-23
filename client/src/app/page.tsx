@@ -13,7 +13,7 @@ export default async function Home({
     const searchQuery = searchParams.q
 
     const res = await fetch(
-        `http://localhost:8080/api/posts?${tag ? `tag=${tag}` : ''}${currentPage > 1 ? `&page=${currentPage}` : ''}${perPage ? `&limit=${perPage}` : ''}${searchQuery ? `&q=${searchQuery}` : ''}`
+        `${process.env.API_BASE_URL}/posts?${tag ? `tag=${tag}` : ''}${currentPage > 1 ? `&page=${currentPage}` : ''}${perPage ? `&limit=${perPage}` : ''}${searchQuery ? `&q=${searchQuery}` : ''}`
     )
     const { posts, totalPages }: { posts: PostProps[]; totalPages: number } =
         await res.json()

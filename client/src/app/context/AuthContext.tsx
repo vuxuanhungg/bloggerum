@@ -25,9 +25,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const checkStatus = async () => {
         // NOTE: Maybe only call server if has cookie
-        const res = await fetch('http://localhost:8080/api/users/profile', {
-            credentials: 'include',
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/profile`,
+            {
+                credentials: 'include',
+            }
+        )
         if (res.ok) {
             const user = await res.json()
             setUser(user)

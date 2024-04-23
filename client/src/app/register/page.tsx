@@ -28,14 +28,17 @@ const Register = () => {
     const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
     const onSubmit = handleSubmit(async (formData) => {
-        const res = await fetch('http://localhost:8080/api/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-            },
-            body: JSON.stringify(formData),
-            credentials: 'include',
-        })
+        const res = await fetch(
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/users`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8',
+                },
+                body: JSON.stringify(formData),
+                credentials: 'include',
+            }
+        )
 
         if (res.status === 400) {
             toast.error('User already exists')
