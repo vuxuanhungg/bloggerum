@@ -10,7 +10,7 @@ import postRoutes from './routes/postRoutes'
 import tagRoutes from './routes/tagRoutes'
 import userRoutes from './routes/userRoutes'
 
-const PORT = process.env.PORT || 8080
+const PORT = parseInt(process.env.PORT) || 8080
 
 connectDB()
 
