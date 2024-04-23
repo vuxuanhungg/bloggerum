@@ -9,5 +9,6 @@ declare namespace NodeJS {
         NODEMAILER_HOST: string
         NODEMAILER_EMAIL: string
         NODEMAILER_PASSWORD: string
+        CORS_ORIGIN: string
     }
 }

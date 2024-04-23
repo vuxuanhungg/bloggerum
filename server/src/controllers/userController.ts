@@ -140,7 +140,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     const messageUrl = await sendEmail(
         req.body.email,
         'Reset Password',
-        `<a href="http://localhost:3000/change-password/${token}">Reset password</a>`
+        `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">Reset password</a>`
     )
     res.json({ messageUrl })
 })
