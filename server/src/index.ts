@@ -26,7 +26,7 @@ app.use(
         secret: process.env.SESSION_SECRET,
         cookie: {
             httpOnly: true,
-            sameSite: 'lax',
+            sameSite: __prod__ ? 'none' : 'lax',
             secure: __prod__,
         },
     })

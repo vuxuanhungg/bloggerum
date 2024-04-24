@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler'
 import { redis } from '../config/redis'
-import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from '../constants'
+import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX, __prod__ } from '../constants'
 import { uploadImage } from '../helpers/imageHelper'
 import User from '../models/userModel'
 import sendEmail from '../utils/sendEmail'
@@ -68,7 +68,10 @@ export const logoutUser = asyncHandler(async (req, res, next) => {
     req.session.destroy((err) => {
         if (err) return next(err)
 
-        res.clearCookie(COOKIE_NAME)
+        res.clearCookie(COOKIE_NAME, {
+            sameSite: __prod__ ? 'none' : 'lax',
+            secure: __prod__,
+        })
         res.json({ message: 'Successfully logged out' })
     })
 })
