@@ -16,7 +16,7 @@ connectDB()
 
 const app = express()
 
-// Initialize session storage
+app.set('trust proxy', 1)
 app.use(
     session({
         name: COOKIE_NAME,
