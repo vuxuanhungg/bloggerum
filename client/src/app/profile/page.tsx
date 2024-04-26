@@ -19,6 +19,7 @@ import Spinner from '../components/Spinner'
 
 interface Inputs {
     name: string
+    email: string
     bio: string
     avatar: FileList
     shouldRemoveAvatar: boolean
@@ -239,6 +240,7 @@ const Form = () => {
     const methods = useForm<Inputs>({
         defaultValues: {
             name: user?.name,
+            email: user?.email,
             bio: user?.bio,
         },
     })
@@ -316,6 +318,22 @@ const Form = () => {
                                 {errors.name.message}
                             </p>
                         )}
+                    </div>
+                    <div className="mt-6">
+                        <label
+                            htmlFor="email"
+                            className="text-sm font-medium text-gray-700"
+                        >
+                            Email
+                        </label>
+                        <input
+                            type="text"
+                            id="email"
+                            placeholder="Your email"
+                            className="mt-2 w-full rounded border px-4 py-2 shadow-sm focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-green-600 disabled:bg-gray-100"
+                            {...register('email')}
+                            disabled
+                        />
                     </div>
 
                     <div className="mt-6">
