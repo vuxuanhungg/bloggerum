@@ -106,8 +106,7 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
     } else {
         user.name = req.body.name || user.name
         user.bio = req.body.bio || user.bio
-        // user.email = req.body.email || user.email
-        // user.password = req.body.password || user.password
+        user.password = req.body.password || user.password
     }
 
     const updatedUser = await user.save()
@@ -177,5 +176,20 @@ export const changePassword = asyncHandler(async (req, res) => {
         email: user.email,
         avatar: user.avatar,
         bio: user.bio,
+    })
+})
+
+// @desc    Validate password
+// @route   POST /api/users/validate-password
+// @access  Private
+export const validatePassword = asyncHandler(async (req, res) => {
+    const user = req.user!
+    const { password } = req.body
+
+    const isValid = await user.matchPassword(password)
+    const statusCode = isValid ? 200 : 401
+
+    res.status(statusCode).json({
+        isValid,
     })
 })
