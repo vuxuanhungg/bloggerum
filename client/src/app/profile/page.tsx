@@ -31,7 +31,7 @@ interface ImageSelectProps {
 
 const ImageSelect = ({ onSubmit }: ImageSelectProps) => {
     const { user } = useAuthContext()
-    const { register, watch, setValue, resetField } = useFormContext()
+    const { register, watch, setValue, resetField } = useFormContext<Inputs>()
     const [modalOpen, setModalOpen] = useState(false)
 
     // TODO: Handle this
