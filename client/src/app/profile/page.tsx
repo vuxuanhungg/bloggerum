@@ -277,28 +277,76 @@ const PasswordChange = () => {
     }
 
     return (
-        <Disclosure as="div" className="mt-6">
-            <Disclosure.Button className="w-full rounded bg-black px-4 py-2 text-sm font-medium text-white">
-                Change password
-            </Disclosure.Button>
-            <Disclosure.Panel className="mt-4">
-                {!isPasswordValid && (
-                    <div>
+        <Disclosure.Panel className="mt-4">
+            {!isPasswordValid && (
+                <div>
+                    <label
+                        htmlFor="currPassword"
+                        className="text-sm font-medium text-gray-700"
+                    >
+                        Current password
+                    </label>
+                    <div className="mt-2 flex items-center rounded border shadow-sm focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-green-600">
+                        <input
+                            type={isPasswordVisible ? 'text' : 'password'}
+                            id="currPassword"
+                            placeholder="********"
+                            className="flex-1 px-4 py-2 focus:outline-none"
+                            {...register('currPassword', {
+                                required:
+                                    'Please provide your current password',
+                            })}
+                        />
+                        <button
+                            type="button"
+                            className="rounded px-4 py-2 focus:outline-green-600"
+                            onClick={() =>
+                                setIsPasswordVisible((prev) => !prev)
+                            }
+                        >
+                            {isPasswordVisible ? (
+                                <EyeIcon className="h-4 w-4" />
+                            ) : (
+                                <EyeSlashIcon className="h-4 w-4" />
+                            )}
+                        </button>
+                    </div>
+                    {watch('currPassword')?.length > 0 && (
+                        <div className="mt-4">
+                            <button
+                                type="button"
+                                className="rounded bg-black px-4 py-2 text-sm font-medium text-white"
+                                onClick={validatePassword}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
+                    {errors.currPassword && (
+                        <p role="alert" className="mt-2 text-sm text-red-500">
+                            {errors.currPassword.message}
+                        </p>
+                    )}
+                </div>
+            )}
+
+            {isPasswordValid && (
+                <>
+                    <div className="mt-6">
                         <label
-                            htmlFor="currPassword"
+                            htmlFor="newPassword"
                             className="text-sm font-medium text-gray-700"
                         >
-                            Current password
+                            New password
                         </label>
                         <div className="mt-2 flex items-center rounded border shadow-sm focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-green-600">
                             <input
                                 type={isPasswordVisible ? 'text' : 'password'}
-                                id="currPassword"
+                                id="newPassword"
                                 placeholder="********"
                                 className="flex-1 px-4 py-2 focus:outline-none"
-                                {...register('currPassword', {
-                                    required:
-                                        'Please provide your current password',
+                                {...register('newPassword', {
+                                    required: 'New password cannot be empty',
                                 })}
                             />
                             <button
@@ -315,126 +363,70 @@ const PasswordChange = () => {
                                 )}
                             </button>
                         </div>
-                        {watch('currPassword')?.length > 0 && (
-                            <div className="mt-4">
-                                <button
-                                    type="button"
-                                    className="rounded bg-black px-4 py-2 text-sm font-medium text-white"
-                                    onClick={validatePassword}
-                                >
-                                    Next
-                                </button>
-                            </div>
-                        )}
-                        {errors.currPassword && (
+                        {errors.newPassword && (
                             <p
                                 role="alert"
                                 className="mt-2 text-sm text-red-500"
                             >
-                                {errors.currPassword.message}
+                                {errors.newPassword.message}
                             </p>
                         )}
                     </div>
-                )}
 
-                {isPasswordValid && (
-                    <>
-                        <div className="mt-6">
-                            <label
-                                htmlFor="newPassword"
-                                className="text-sm font-medium text-gray-700"
+                    <div className="mt-6">
+                        <label
+                            htmlFor="confirmNewPassword"
+                            className="text-sm font-medium text-gray-700"
+                        >
+                            Confirm password
+                        </label>
+                        <div className="mt-2 flex items-center rounded border shadow-sm focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-green-600">
+                            <input
+                                type={isPasswordVisible ? 'text' : 'password'}
+                                id="confirmNewPassword"
+                                placeholder="********"
+                                className="flex-1 px-4 py-2 focus:outline-none"
+                                {...register('confirmNewPassword', {
+                                    required: 'Please confirm your password',
+                                    validate: (value) => {
+                                        if (value !== watch('newPassword'))
+                                            return 'Your password do not match'
+                                    },
+                                })}
+                            />
+                            <button
+                                type="button"
+                                className="rounded px-4 py-2 focus:outline-green-600"
+                                onClick={() =>
+                                    setIsPasswordVisible((prev) => !prev)
+                                }
                             >
-                                New password
-                            </label>
-                            <div className="mt-2 flex items-center rounded border shadow-sm focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-green-600">
-                                <input
-                                    type={
-                                        isPasswordVisible ? 'text' : 'password'
-                                    }
-                                    id="newPassword"
-                                    placeholder="********"
-                                    className="flex-1 px-4 py-2 focus:outline-none"
-                                    {...register('newPassword', {
-                                        required:
-                                            'New password cannot be empty',
-                                    })}
-                                />
-                                <button
-                                    type="button"
-                                    className="rounded px-4 py-2 focus:outline-green-600"
-                                    onClick={() =>
-                                        setIsPasswordVisible((prev) => !prev)
-                                    }
-                                >
-                                    {isPasswordVisible ? (
-                                        <EyeIcon className="h-4 w-4" />
-                                    ) : (
-                                        <EyeSlashIcon className="h-4 w-4" />
-                                    )}
-                                </button>
-                            </div>
-                            {errors.newPassword && (
-                                <p
-                                    role="alert"
-                                    className="mt-2 text-sm text-red-500"
-                                >
-                                    {errors.newPassword.message}
-                                </p>
-                            )}
+                                {isPasswordVisible ? (
+                                    <EyeIcon className="h-4 w-4" />
+                                ) : (
+                                    <EyeSlashIcon className="h-4 w-4" />
+                                )}
+                            </button>
                         </div>
-
-                        <div className="mt-6">
-                            <label
-                                htmlFor="confirmNewPassword"
-                                className="text-sm font-medium text-gray-700"
+                        {errors.confirmNewPassword && (
+                            <p
+                                role="alert"
+                                className="mt-2 text-sm text-red-500"
                             >
-                                Confirm password
-                            </label>
-                            <div className="mt-2 flex items-center rounded border shadow-sm focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-green-600">
-                                <input
-                                    type={
-                                        isPasswordVisible ? 'text' : 'password'
-                                    }
-                                    id="confirmNewPassword"
-                                    placeholder="********"
-                                    className="flex-1 px-4 py-2 focus:outline-none"
-                                    {...register('confirmNewPassword', {
-                                        required:
-                                            'Please confirm your password',
-                                        validate: (value) => {
-                                            if (value !== watch('newPassword'))
-                                                return 'Your password do not match'
-                                        },
-                                    })}
-                                />
-                                <button
-                                    type="button"
-                                    className="rounded px-4 py-2 focus:outline-green-600"
-                                    onClick={() =>
-                                        setIsPasswordVisible((prev) => !prev)
-                                    }
-                                >
-                                    {isPasswordVisible ? (
-                                        <EyeIcon className="h-4 w-4" />
-                                    ) : (
-                                        <EyeSlashIcon className="h-4 w-4" />
-                                    )}
-                                </button>
-                            </div>
-                            {errors.confirmNewPassword && (
-                                <p
-                                    role="alert"
-                                    className="mt-2 text-sm text-red-500"
-                                >
-                                    {errors.confirmNewPassword.message}
-                                </p>
-                            )}
-                        </div>
-                    </>
-                )}
-            </Disclosure.Panel>
-        </Disclosure>
+                                {errors.confirmNewPassword.message}
+                            </p>
+                        )}
+                    </div>
+                </>
+            )}
+        </Disclosure.Panel>
     )
+}
+
+const PasswordChangeWrapper = ({ open }: { open: boolean }) => {
+    if (!open) return null
+
+    return <PasswordChange />
 }
 
 const Form = () => {
@@ -563,7 +555,16 @@ const Form = () => {
                         )}
                     </div>
 
-                    <PasswordChange />
+                    <Disclosure as="div" className="mt-6">
+                        {({ open }) => (
+                            <>
+                                <Disclosure.Button className="w-full rounded bg-black px-4 py-2 text-sm font-medium text-white">
+                                    Change password
+                                </Disclosure.Button>
+                                <PasswordChangeWrapper open={open} />
+                            </>
+                        )}
+                    </Disclosure>
 
                     <div className="mt-6">
                         <button
