@@ -65,7 +65,7 @@ const Form = ({ post }: { post: PostProps }) => {
                     <TextareaAutosize
                         rows={1}
                         placeholder="Post title"
-                        className="w-full overflow-y-hidden text-3xl font-semibold focus:outline-none"
+                        className="w-full overflow-y-hidden text-3xl font-bold focus:outline-none"
                         {...register('title', {
                             required: 'Title is required',
                         })}
