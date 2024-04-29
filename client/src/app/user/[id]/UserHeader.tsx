@@ -1,14 +1,16 @@
 'use client'
 import Image from 'next/image'
-import { PostProps } from '~/app/types'
+import { useAuthContext } from '~/app/context/AuthContext'
 
-const UserHeader = ({ user }: { user: PostProps['user'] }) => {
+const UserHeader = () => {
+    const { user } = useAuthContext()
+    if (!user) return null
     return (
         <div className="flex justify-center">
             <div className="inline-flex items-center justify-center gap-6 rounded-xl border px-6 py-4 lg:px-10">
                 <div className="relative flex h-40 w-40 items-center justify-center overflow-hidden rounded-full bg-slate-500">
                     {!user.avatar && (
-                        <p className="font-semibold text-white">
+                        <p className="text-5xl font-semibold text-white">
                             {user.name.slice(0, 1)}
                         </p>
                     )}

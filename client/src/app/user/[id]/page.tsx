@@ -21,7 +21,7 @@ const UserPosts = async ({
 
     return (
         <div className="container">
-            <UserHeader user={posts[0].user} />
+            <UserHeader />
             <div className="mt-8">
                 {totalPages === 0 && <div>No posts yet</div>}
                 {totalPages > 0 && (
