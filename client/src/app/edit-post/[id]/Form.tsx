@@ -7,19 +7,19 @@ import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import { toast } from 'react-toastify'
 import { revalidatePosts } from '~/app/actions'
+import RichTextEditor from '~/app/components/RichTextEditor'
 import Spinner from '~/app/components/Spinner'
 import TagInput from '~/app/components/TagInput'
 import { PostProps } from '~/app/types'
-import { compareArrays } from '~/app/utils'
 
 type Inputs = {
     title: string
-    body: string
     thumbnail: FileList
 }
 
 const Form = ({ post }: { post: PostProps }) => {
     const router = useRouter()
+    const [body, setBody] = useState<string>(post.body)
     const [tags, setTags] = useState<string[]>(post.tags)
 
     const {
@@ -30,21 +30,13 @@ const Form = ({ post }: { post: PostProps }) => {
     } = useForm<Inputs>({
         defaultValues: {
             title: post.title,
-            body: post.body,
         },
     })
-
-    const shouldDisableSubmit =
-        (watch('title') === post.title &&
-            watch('body') === post.body &&
-            watch('thumbnail')?.length === 0 &&
-            compareArrays(tags, post.tags)) ||
-        isSubmitting
 
     const onSubmit = handleSubmit(async (formData) => {
         const data = new FormData()
         data.append('title', formData.title)
-        data.append('body', formData.body)
+        data.append('body', body)
         data.append('thumbnail', formData.thumbnail[0])
         data.append('tags', JSON.stringify(tags))
 
@@ -86,18 +78,7 @@ const Form = ({ post }: { post: PostProps }) => {
                 </div>
 
                 <div className="mt-6">
-                    <TextareaAutosize
-                        placeholder="Post body"
-                        className="min-h-64 w-full overflow-y-hidden focus:outline-none"
-                        {...register('body', {
-                            required: 'Body is required',
-                        })}
-                    />
-                    {errors.body && (
-                        <p role="alert" className="mt-2 text-sm text-red-500">
-                            {errors.body.message}
-                        </p>
-                    )}
+                    <RichTextEditor value={body} onChange={setBody} />
                 </div>
 
                 <TagInput {...{ tags, setTags }} />
@@ -146,13 +127,8 @@ const Form = ({ post }: { post: PostProps }) => {
                     <div className="grid grid-cols-2 items-center gap-2">
                         <button
                             type="submit"
-                            disabled={shouldDisableSubmit}
+                            disabled={isSubmitting}
                             className="rounded bg-green-600 px-8 py-3 font-semibold text-white enabled:hover:bg-green-500 disabled:bg-green-500"
-                            title={
-                                shouldDisableSubmit
-                                    ? 'You have not made any changes to the post'
-                                    : ''
-                            }
                         >
                             <div className="flex items-center justify-center gap-2">
                                 {isSubmitting && (

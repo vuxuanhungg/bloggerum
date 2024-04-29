@@ -1,7 +1,9 @@
+import { format } from 'date-fns'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PostProps } from '../types'
-import { format } from 'date-fns'
+import RichTextEditor from './RichTextEditor'
+import { serialize } from './RichTextEditor/helpers'
 
 const Post = ({
     post,
@@ -30,7 +32,7 @@ const Post = ({
                 </h2>
             </Link>
             <p className="mt-2 line-clamp-2 text-sm text-gray-500">
-                {post.body}...
+                {serialize(JSON.parse(post.body))}
             </p>
 
             <div className="mt-4 flex items-center gap-3">

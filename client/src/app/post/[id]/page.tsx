@@ -2,6 +2,7 @@ import { format } from 'date-fns'
 import Image from 'next/image'
 import Link from 'next/link'
 import Post from '~/app/components/Post'
+import RichTextEditor from '~/app/components/RichTextEditor'
 import { PostProps } from '~/app/types'
 
 const RelatedPosts = ({ posts }: { posts: PostProps[] }) => {
@@ -79,7 +80,7 @@ const DetailPost = async ({ params }: { params: { id: string } }) => {
                     />
                 </div>
                 <div className="container mx-auto mt-8 max-w-2xl text-slate-800">
-                    <p className="whitespace-pre-wrap">{post.body}</p>
+                    <RichTextEditor readOnly value={post.body} />
 
                     {post.tags.length > 0 && (
                         <ul className="mt-8 flex items-center gap-2">

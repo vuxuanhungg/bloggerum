@@ -7,18 +7,19 @@ import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import { toast } from 'react-toastify'
 import { revalidatePosts } from '../actions'
+import RichTextEditor from '../components/RichTextEditor'
 import Spinner from '../components/Spinner'
 import TagInput from '../components/TagInput'
 import { PostProps } from '../types'
 
 type Inputs = {
     title: string
-    body: string
     thumbnail: FileList
 }
 
 const CreatePost = () => {
     const router = useRouter()
+    const [body, setBody] = useState<string>('')
     const [tags, setTags] = useState<string[]>([])
 
     const {
@@ -33,7 +34,7 @@ const CreatePost = () => {
     const onSubmit = handleSubmit(async (formData) => {
         const data = new FormData()
         data.append('title', formData.title)
-        data.append('body', formData.body)
+        data.append('body', body)
         data.append('thumbnail', formData.thumbnail[0])
         data.append('tags', JSON.stringify(tags))
 
@@ -75,18 +76,7 @@ const CreatePost = () => {
                 </div>
 
                 <div className="mt-6">
-                    <TextareaAutosize
-                        placeholder="Post body"
-                        className="min-h-64 w-full overflow-y-hidden focus:outline-none"
-                        {...register('body', {
-                            required: 'Body is required',
-                        })}
-                    />
-                    {errors.body && (
-                        <p role="alert" className="mt-2 text-sm text-red-500">
-                            {errors.body.message}
-                        </p>
-                    )}
+                    <RichTextEditor onChange={setBody} />
                 </div>
 
                 <TagInput {...{ tags, setTags }} />
