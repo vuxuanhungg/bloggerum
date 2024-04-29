@@ -184,84 +184,98 @@ export const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
 }
 
 export const Toolbar = () => (
-    <div className="flex flex-wrap items-center gap-3 border-b py-4">
-        <MarkButton format="bold">
-            <Image src={letterBoldIcon} alt="letter bold" className="h-5 w-5" />
-        </MarkButton>
-        <MarkButton format="italic">
-            <Image
-                src={letterItalicIcon}
-                alt="letter italic"
-                className="h-5 w-5"
-            />
-        </MarkButton>
-        <MarkButton format="underline">
-            <Image
-                src={letterUnderlineIcon}
-                alt="letter underline"
-                className="h-5 w-5"
-            />
-        </MarkButton>
-        <MarkButton format="code">
-            <Image src={codeIcon} alt="code" className="h-5 w-5" />
-        </MarkButton>
-        <BlockButton format="heading-two">
-            <Image src={headingTwoIcon} alt="heading two" className="h-5 w-5" />
-        </BlockButton>
-        <BlockButton format="heading-three">
-            <Image
-                src={headingThreeIcon}
-                alt="heading three"
-                className="h-5 w-5"
-            />
-        </BlockButton>
-        <BlockButton format="paragraph">
-            <Image src={paragraphIcon} alt="paragraph" className="h-5 w-5" />
-        </BlockButton>
-        <BlockButton format="block-quote">
-            <Image src={quotesIcon} alt="quotes" className="h-5 w-5" />
-        </BlockButton>
-        <BlockButton format="numbered-list">
-            <Image
-                src={numberedListIcon}
-                alt="numbered list"
-                className="h-5 w-5"
-            />
-        </BlockButton>
-        <BlockButton format="bulleted-list">
-            <Image
-                src={bulletedListIcon}
-                alt="bulleted list"
-                className="h-5 w-5"
-            />
-        </BlockButton>
-        <BlockButton format="left">
-            <Image
-                src={textAlignLeftIcon}
-                alt="text align left"
-                className="h-5 w-5"
-            />
-        </BlockButton>
-        <BlockButton format="center">
-            <Image
-                src={textAlignCenterIcon}
-                alt="text align center"
-                className="h-5 w-5"
-            />
-        </BlockButton>
-        <BlockButton format="right">
-            <Image
-                src={textAlignRightIcon}
-                alt="text align right"
-                className="h-5 w-5"
-            />
-        </BlockButton>
-        <BlockButton format="justify">
-            <Image
-                src={textAlignJustifyIcon}
-                alt="text align justify"
-                className="h-5 w-5"
-            />
-        </BlockButton>
+    <div className="sticky top-0 z-10 bg-white">
+        <div className="flex flex-wrap items-center gap-3 border-b py-4">
+            <MarkButton format="bold">
+                <Image
+                    src={letterBoldIcon}
+                    alt="letter bold"
+                    className="h-5 w-5"
+                />
+            </MarkButton>
+            <MarkButton format="italic">
+                <Image
+                    src={letterItalicIcon}
+                    alt="letter italic"
+                    className="h-5 w-5"
+                />
+            </MarkButton>
+            <MarkButton format="underline">
+                <Image
+                    src={letterUnderlineIcon}
+                    alt="letter underline"
+                    className="h-5 w-5"
+                />
+            </MarkButton>
+            <MarkButton format="code">
+                <Image src={codeIcon} alt="code" className="h-5 w-5" />
+            </MarkButton>
+            <BlockButton format="heading-two">
+                <Image
+                    src={headingTwoIcon}
+                    alt="heading two"
+                    className="h-5 w-5"
+                />
+            </BlockButton>
+            <BlockButton format="heading-three">
+                <Image
+                    src={headingThreeIcon}
+                    alt="heading three"
+                    className="h-5 w-5"
+                />
+            </BlockButton>
+            <BlockButton format="paragraph">
+                <Image
+                    src={paragraphIcon}
+                    alt="paragraph"
+                    className="h-5 w-5"
+                />
+            </BlockButton>
+            <BlockButton format="block-quote">
+                <Image src={quotesIcon} alt="quotes" className="h-5 w-5" />
+            </BlockButton>
+            <BlockButton format="numbered-list">
+                <Image
+                    src={numberedListIcon}
+                    alt="numbered list"
+                    className="h-5 w-5"
+                />
+            </BlockButton>
+            <BlockButton format="bulleted-list">
+                <Image
+                    src={bulletedListIcon}
+                    alt="bulleted list"
+                    className="h-5 w-5"
+                />
+            </BlockButton>
+            <BlockButton format="left">
+                <Image
+                    src={textAlignLeftIcon}
+                    alt="text align left"
+                    className="h-5 w-5"
+                />
+            </BlockButton>
+            <BlockButton format="center">
+                <Image
+                    src={textAlignCenterIcon}
+                    alt="text align center"
+                    className="h-5 w-5"
+                />
+            </BlockButton>
+            <BlockButton format="right">
+                <Image
+                    src={textAlignRightIcon}
+                    alt="text align right"
+                    className="h-5 w-5"
+                />
+            </BlockButton>
+            <BlockButton format="justify">
+                <Image
+                    src={textAlignJustifyIcon}
+                    alt="text align justify"
+                    className="h-5 w-5"
+                />
+            </BlockButton>
+        </div>
     </div>
 )
