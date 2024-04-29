@@ -38,7 +38,7 @@ const UserPanel = () => {
     if (!user) return null
 
     return (
-        <Menu as="div" className="relative">
+        <Menu as="div" className="relative z-20">
             <Menu.Button className="flex items-center gap-2">
                 <div className="relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-slate-500">
                     {!user.avatar && (
