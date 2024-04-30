@@ -193,3 +193,21 @@ export const validatePassword = asyncHandler(async (req, res) => {
         isValid,
     })
 })
+
+// @desc    Get an user profile
+// @route   GET /api/users/profile/:id
+// @access  Public
+export const getUserProfileById = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id)
+    if (!user) {
+        res.status(404)
+        throw new Error('User not found')
+    }
+    res.json({
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+        bio: user.bio,
+    })
+})

@@ -1,10 +1,27 @@
 'use client'
 import Image from 'next/image'
-import { useAuthContext } from '~/app/context/AuthContext'
+import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { UserProps } from '~/app/types'
 
 const UserHeader = () => {
-    const { user } = useAuthContext()
+    const [user, setUser] = useState<UserProps | null>(null)
+    const { id } = useParams<{ id: string }>()
+
+    useEffect(() => {
+        const fetchUserProfileById = async () => {
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/users/profile/${id}`
+            )
+            const user = await res.json()
+            setUser(user)
+        }
+
+        fetchUserProfileById()
+    }, [id])
+
     if (!user) return null
+
     return (
         <div className="flex justify-center">
             <div className="inline-flex items-center justify-center gap-6 rounded-xl border px-6 py-4 lg:px-10">
