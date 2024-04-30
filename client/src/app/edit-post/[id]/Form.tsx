@@ -1,8 +1,9 @@
 'use client'
 import { PencilSquareIcon } from '@heroicons/react/20/solid'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import { toast } from 'react-toastify'
@@ -10,6 +11,7 @@ import { revalidatePosts } from '~/app/actions'
 import RichTextEditor from '~/app/components/RichTextEditor'
 import Spinner from '~/app/components/Spinner'
 import TagInput from '~/app/components/TagInput'
+import useSessionStorage from '~/app/hooks/useSessionStorage'
 import { PostProps } from '~/app/types'
 
 type Inputs = {
@@ -17,10 +19,47 @@ type Inputs = {
     thumbnail: FileList
 }
 
+const POST_EDIT_SESSION_STORAGE_KEYS = [
+    'postEditTitle',
+    'postEditBody',
+    'postEditTags',
+] as const
+
 const Form = ({ post }: { post: PostProps }) => {
     const router = useRouter()
-    const [body, setBody] = useState<string>(post.body)
-    const [tags, setTags] = useState<string[]>(post.tags)
+    const [id, setId, removeId] = useSessionStorage('postEditId', post._id)
+
+    // Editing different post
+    // Clear old content before first render
+    if (id !== post._id) {
+        POST_EDIT_SESSION_STORAGE_KEYS.forEach((key) =>
+            window.sessionStorage.removeItem(key)
+        )
+    }
+
+    // Reset postId after first render
+    useEffect(() => {
+        setId(post._id)
+    }, [setId, post._id])
+
+    const [title, setTitle, removeTitle] = useSessionStorage(
+        POST_EDIT_SESSION_STORAGE_KEYS[0],
+        post.title
+    )
+    const [body, setBody, removeBody] = useSessionStorage(
+        POST_EDIT_SESSION_STORAGE_KEYS[1],
+        post.body
+    )
+    const [tags, setTags, removeTags] = useSessionStorage<string[]>(
+        POST_EDIT_SESSION_STORAGE_KEYS[2],
+        post.tags
+    )
+    const resetSessionStorage = () => {
+        removeId()
+        removeTitle()
+        removeBody()
+        removeTags()
+    }
 
     const {
         register,
@@ -28,9 +67,7 @@ const Form = ({ post }: { post: PostProps }) => {
         handleSubmit,
         formState: { errors, isSubmitting },
     } = useForm<Inputs>({
-        defaultValues: {
-            title: post.title,
-        },
+        defaultValues: { title },
     })
 
     const onSubmit = handleSubmit(async (formData) => {
@@ -54,20 +91,22 @@ const Form = ({ post }: { post: PostProps }) => {
 
         const updatedPost: PostProps = await res.json()
         toast.success('Post updated!')
+        resetSessionStorage()
         revalidatePosts()
         router.push(`/post/${updatedPost._id}`)
     })
 
     return (
         <div className="container mx-auto mb-8 max-w-2xl lg:min-w-[40rem]">
-            <form onKeyDown={(e) => e.key !== 'Enter'} onSubmit={onSubmit}>
+            <form onSubmit={onSubmit}>
                 <div>
                     <TextareaAutosize
                         rows={1}
                         placeholder="Post title"
-                        className="w-full overflow-y-hidden text-3xl font-bold focus:outline-none"
+                        className="w-full overflow-y-hidden text-3xl font-bold leading-normal focus:outline-none"
                         {...register('title', {
                             required: 'Title is required',
+                            onChange: (e) => setTitle(e.target.value),
                         })}
                     />
                     {errors.title && (
@@ -141,7 +180,10 @@ const Form = ({ post }: { post: PostProps }) => {
                         <button
                             type="button"
                             className="rounded border border-gray-300 px-8 py-3 font-semibold text-green-600 hover:bg-green-100"
-                            onClick={() => router.back()}
+                            onClick={() => {
+                                resetSessionStorage()
+                                router.back()
+                            }}
                         >
                             Cancel
                         </button>
@@ -152,4 +194,11 @@ const Form = ({ post }: { post: PostProps }) => {
     )
 }
 
-export default Form
+export default dynamic(() => Promise.resolve(Form), {
+    loading: () => (
+        <div className="flex justify-center">
+            <Spinner size="lg" />
+        </div>
+    ),
+    ssr: false,
+})

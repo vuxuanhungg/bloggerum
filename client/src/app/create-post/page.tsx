@@ -1,8 +1,8 @@
 'use client'
 import { PhotoIcon } from '@heroicons/react/20/solid'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import TextareaAutosize from 'react-textarea-autosize'
 import { toast } from 'react-toastify'
@@ -10,6 +10,7 @@ import { revalidatePosts } from '../actions'
 import RichTextEditor from '../components/RichTextEditor'
 import Spinner from '../components/Spinner'
 import TagInput from '../components/TagInput'
+import useSessionStorage from '../hooks/useSessionStorage'
 import { PostProps } from '../types'
 
 type Inputs = {
@@ -19,15 +20,30 @@ type Inputs = {
 
 const CreatePost = () => {
     const router = useRouter()
-    const [body, setBody] = useState<string>('')
-    const [tags, setTags] = useState<string[]>([])
+    const [title, setTitle, removeTitle] = useSessionStorage(
+        'postCreateTitle',
+        ''
+    )
+    const [body, setBody, removeBody] = useSessionStorage('postCreateBody', '')
+    const [tags, setTags, removeTags] = useSessionStorage<string[]>(
+        'postCreateTags',
+        []
+    )
+
+    const resetSessionStorage = () => {
+        removeTitle()
+        removeBody()
+        removeTags()
+    }
 
     const {
         register,
         watch,
         handleSubmit,
         formState: { errors, isSubmitting },
-    } = useForm<Inputs>()
+    } = useForm<Inputs>({
+        defaultValues: { title },
+    })
 
     const thumbnail = watch('thumbnail')
 
@@ -52,20 +68,22 @@ const CreatePost = () => {
 
         const post: PostProps = await res.json()
         toast.success('Post created!')
+        resetSessionStorage()
         revalidatePosts()
         router.push(`/post/${post._id}`)
     })
 
     return (
         <div className="container mx-auto mb-8 max-w-2xl lg:min-w-[40rem]">
-            <form onKeyDown={(e) => e.key !== 'Enter'} onSubmit={onSubmit}>
+            <form onSubmit={onSubmit}>
                 <div>
                     <TextareaAutosize
                         rows={1}
                         placeholder="Post title"
-                        className="w-full overflow-y-hidden text-3xl font-bold focus:outline-none"
+                        className="w-full overflow-y-hidden text-3xl font-bold leading-normal focus:outline-none"
                         {...register('title', {
                             required: 'Title is required',
+                            onChange: (e) => setTitle(e.target.value),
                         })}
                     />
                     {errors.title && (
@@ -76,7 +94,7 @@ const CreatePost = () => {
                 </div>
 
                 <div className="mt-6">
-                    <RichTextEditor onChange={setBody} />
+                    <RichTextEditor value={body} onChange={setBody} />
                 </div>
 
                 <TagInput {...{ tags, setTags }} />
@@ -144,4 +162,11 @@ const CreatePost = () => {
     )
 }
 
-export default CreatePost
+export default dynamic(() => Promise.resolve(CreatePost), {
+    loading: () => (
+        <div className="flex justify-center">
+            <Spinner size="lg" />
+        </div>
+    ),
+    ssr: false,
+})
