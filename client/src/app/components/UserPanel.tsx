@@ -100,13 +100,13 @@ const UserPanel = () => {
                         </div>
                     </div>
                     <div className="p-1">
-                        <Menu.Item as="div" className="lg:hidden">
+                        <Menu.Item>
                             {({ active }) => (
                                 <Link
                                     href="/create-post"
                                     className={`${
                                         active ? 'bg-gray-200' : 'text-gray-900'
-                                    } flex w-full items-center gap-3 rounded-md px-4 py-3 text-sm`}
+                                    } flex w-full items-center gap-3 rounded-md px-4 py-3 text-sm lg:hidden`}
                                 >
                                     <PlusIcon className="h-5 w-5 text-gray-500" />
                                     Create Post
