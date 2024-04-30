@@ -115,16 +115,16 @@ export const Element = ({
         case 'block-quote':
             return (
                 <blockquote
-                    className="border-l-4 p-1 pl-6 italic text-gray-500"
+                    className="border-l-4 p-1 pl-6 italic leading-relaxed text-gray-500"
                     style={style}
                     {...attributes}
                 >
-                    &ldquo;{children}&rdquo;
+                    {children}
                 </blockquote>
             )
         case 'list-item':
             return (
-                <li style={style} {...attributes}>
+                <li className="leading-relaxed" style={style} {...attributes}>
                     {children}
                 </li>
             )
@@ -150,13 +150,21 @@ export const Element = ({
             )
         case 'paragraph':
             return (
-                <p className="mt-1" style={style} {...attributes}>
+                <p
+                    className="mt-1 leading-relaxed"
+                    style={style}
+                    {...attributes}
+                >
                     {children}
                 </p>
             )
         default:
             return (
-                <p className="mt-1" style={style} {...attributes}>
+                <p
+                    className="mt-1 leading-relaxed"
+                    style={style}
+                    {...attributes}
+                >
                     {children}
                 </p>
             )
@@ -165,7 +173,7 @@ export const Element = ({
 
 export const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
     if (leaf.bold) {
-        children = <strong>{children}</strong>
+        children = <strong className="text-gray-700">{children}</strong>
     }
 
     if (leaf.italic) {

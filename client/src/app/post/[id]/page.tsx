@@ -79,7 +79,7 @@ const DetailPost = async ({ params }: { params: { id: string } }) => {
                         className="object-cover"
                     />
                 </div>
-                <div className="container mx-auto mt-8 max-w-2xl text-slate-800">
+                <div className="container mx-auto mt-8 max-w-2xl text-slate-800 lg:min-w-[40rem]">
                     <RichTextEditor readOnly value={post.body} />
 
                     {post.tags.length > 0 && (

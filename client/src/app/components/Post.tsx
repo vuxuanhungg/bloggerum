@@ -2,7 +2,6 @@ import { format } from 'date-fns'
 import Image from 'next/image'
 import Link from 'next/link'
 import { PostProps } from '../types'
-import RichTextEditor from './RichTextEditor'
 import { serialize } from './RichTextEditor/helpers'
 
 const Post = ({
