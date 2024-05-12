@@ -79,7 +79,7 @@ export const serialize = (nodes: Node[]) => {
     return nodes.map((n) => Node.string(n)).join('\n')
 }
 
-const isImageUrl = (url: string) => {
+export const isImageUrl = (url: string) => {
     if (!url) return false
     if (!isUrl(url)) return false
     return fetch(url, { method: 'HEAD' }).then((res) => {
@@ -113,32 +113,4 @@ export const insertImage = (editor: Editor, url: string) => {
         type: 'paragraph',
         children: [{ text: '' }],
     })
-}
-
-export const withImages = (editor: Editor) => {
-    const { insertData, isVoid } = editor
-
-    editor.isVoid = (element) => element.type === 'image' || isVoid(element)
-    editor.insertData = (data) => {
-        const text = data.getData('text/plain')
-        const { files } = data
-
-        if (files?.length > 0) {
-            Array.from(files).forEach(async (file) => {
-                const [mime] = file.type.split('/')
-                if (mime === 'image') {
-                    const res = await uploadImageToServer(file)
-                    if (res?.imageUrl) {
-                        insertImage(editor, res.imageUrl)
-                    }
-                }
-            })
-        } else if (isImageUrl(text)) {
-            insertImage(editor, text)
-        } else {
-            insertData(data)
-        }
-    }
-
-    return editor
 }

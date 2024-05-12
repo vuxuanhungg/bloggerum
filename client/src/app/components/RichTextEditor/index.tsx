@@ -11,7 +11,8 @@ import {
     withReact,
 } from 'slate-react'
 import { Element, Leaf, Toolbar } from './components'
-import { toggleMark, withImages } from './helpers'
+import { toggleMark } from './helpers'
+import { withImages } from './plugins'
 import { MarkFormat } from './types'
 
 const HOTKEYS: Record<string, MarkFormat> = {
