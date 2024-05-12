@@ -1,4 +1,5 @@
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3'
+import isUrl from 'is-url'
 import sharp from 'sharp'
 import { s3Client } from '../config/s3'
 import { TEBI_BUCKET_NAME, TEBI_ENDPOINT } from '../constants'
@@ -6,15 +7,19 @@ import uuid from '../utils/uuid'
 
 const imageUrlPrefix = `${TEBI_ENDPOINT}/${TEBI_BUCKET_NAME}`
 
-export const uploadImage = async (image: {
-    buffer: Buffer
-    mimetype: string
-}) => {
+export const uploadImage = async (
+    image: {
+        buffer: Buffer
+        mimetype: string
+    },
+    resize: Boolean = true
+) => {
     const imageName = uuid()
+
     const imageBuffer = await sharp(image.buffer)
         .resize({
             width: 1200,
-            height: 800,
+            height: !resize ? undefined : 800,
             withoutEnlargement: true,
         })
         .webp()
@@ -33,10 +38,15 @@ export const uploadImage = async (image: {
     return { imageUrl }
 }
 
-export const deleteImage = async (imageUrl: string) => {
+export const deleteImage = async (imageUrlOrName: string) => {
+    let key = imageUrlOrName
+    if (isUrl(imageUrlOrName)) {
+        key = imageUrlOrName.replace(`${imageUrlPrefix}/`, '')
+    }
+
     const deleteCommand = new DeleteObjectCommand({
         Bucket: TEBI_BUCKET_NAME,
-        Key: imageUrl.replace(`${imageUrlPrefix}/`, ''),
+        Key: key,
     })
     await s3Client.send(deleteCommand)
 }

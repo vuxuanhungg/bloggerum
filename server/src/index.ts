@@ -6,6 +6,7 @@ import { connectDB } from './config/db'
 import { redisStore } from './config/redis'
 import { COOKIE_NAME, __prod__ } from './constants'
 import { errorHandler, notFound } from './middleware/errorMiddleware'
+import imageRoutes from './routes/imageRoutes'
 import postRoutes from './routes/postRoutes'
 import tagRoutes from './routes/tagRoutes'
 import userRoutes from './routes/userRoutes'
@@ -43,6 +44,7 @@ app.use(
 app.use('/api/users', userRoutes)
 app.use('/api/posts', postRoutes)
 app.use('/api/tags', tagRoutes)
+app.use('/api/images', imageRoutes)
 
 app.use(notFound)
 app.use(errorHandler)

@@ -11,7 +11,7 @@ import {
     withReact,
 } from 'slate-react'
 import { Element, Leaf, Toolbar } from './components'
-import { toggleMark } from './helpers'
+import { toggleMark, withImages } from './helpers'
 import { MarkFormat } from './types'
 
 const HOTKEYS: Record<string, MarkFormat> = {
@@ -38,7 +38,10 @@ const RichTextEditor = ({
         (props: RenderLeafProps) => <Leaf {...props} />,
         []
     )
-    const editor = useMemo(() => withHistory(withReact(createEditor())), [])
+    const editor = useMemo(
+        () => withImages(withHistory(withReact(createEditor()))),
+        []
+    )
 
     const initialValue: Descendant[] = value
         ? JSON.parse(value)
@@ -69,9 +72,7 @@ const RichTextEditor = ({
                 )
                 if (isAstChange) {
                     const content = JSON.stringify(value)
-                    if (onChange) {
-                        onChange(content)
-                    }
+                    onChange && onChange(content)
                 }
             }}
         >

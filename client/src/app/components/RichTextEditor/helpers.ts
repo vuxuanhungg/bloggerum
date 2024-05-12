@@ -1,6 +1,8 @@
+import isUrl from 'is-url'
+import { toast } from 'react-toastify'
 import { Editor, Node, Element as SlateElement, Transforms } from 'slate'
 import { LIST_TYPES, TEXT_ALIGN_TYPES } from './constants'
-import type { BlockFormat, MarkFormat, TextAlign } from './types'
+import type { BlockFormat, ImageElement, MarkFormat, TextAlign } from './types'
 
 export const isMarkActive = (editor: Editor, format: MarkFormat) => {
     const marks = Editor.marks(editor)
@@ -21,6 +23,7 @@ export const isBlockActive = (
             match: (n) =>
                 !Editor.isEditor(n) &&
                 SlateElement.isElement(n) &&
+                n.type !== 'image' &&
                 n[blockType] === format,
         })
     )
@@ -74,4 +77,64 @@ export const toggleBlock = (editor: Editor, format: BlockFormat) => {
 
 export const serialize = (nodes: Node[]) => {
     return nodes.map((n) => Node.string(n)).join('\n')
+}
+
+const isImageUrl = (url: string) => {
+    if (!url) return false
+    if (!isUrl(url)) return false
+    return fetch(url, { method: 'HEAD' }).then((res) => {
+        return res.headers.get('Content-Type')?.startsWith('image')
+    })
+}
+
+const insertImage = (editor: Editor, url: string) => {
+    const text = { text: '' }
+    const image: ImageElement = { type: 'image', url, children: [text] }
+    Transforms.insertNodes(editor, image)
+    Transforms.insertNodes(editor, {
+        type: 'paragraph',
+        children: [text],
+    })
+}
+
+export const withImages = (editor: Editor) => {
+    const { insertData, isVoid } = editor
+
+    editor.isVoid = (element) => element.type === 'image' || isVoid(element)
+    editor.insertData = (data) => {
+        const text = data.getData('text/plain')
+        const { files } = data
+
+        if (files?.length > 0) {
+            Array.from(files).forEach(async (file) => {
+                const [mime] = file.type.split('/')
+
+                if (mime === 'image') {
+                    const data = new FormData()
+                    data.append('image', file)
+                    data.append('resize', JSON.stringify(false))
+
+                    const res = await fetch(
+                        `${process.env.NEXT_PUBLIC_API_BASE_URL}/images`,
+                        {
+                            method: 'POST',
+                            body: data,
+                            credentials: 'include',
+                        }
+                    )
+                    if (!res.ok) {
+                        return toast.error('Error occurred')
+                    }
+                    const { imageUrl }: { imageUrl: string } = await res.json()
+                    insertImage(editor, imageUrl)
+                }
+            })
+        } else if (isImageUrl(text)) {
+            insertImage(editor, text)
+        } else {
+            insertData(data)
+        }
+    }
+
+    return editor
 }
