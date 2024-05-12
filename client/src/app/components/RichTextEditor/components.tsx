@@ -12,6 +12,7 @@ import {
     useSlateStatic,
 } from 'slate-react'
 import codeIcon from './assets/Code.svg'
+import imageIcon from './assets/Image.svg'
 import bulletedListIcon from './assets/ListBullets.svg'
 import numberedListIcon from './assets/ListNumbers.svg'
 import paragraphIcon from './assets/Paragraph.svg'
@@ -26,7 +27,14 @@ import headingTwoIcon from './assets/TextHTwo.svg'
 import letterItalicIcon from './assets/TextItalic.svg'
 import letterUnderlineIcon from './assets/TextUnderline.svg'
 import { TEXT_ALIGN_TYPES } from './constants'
-import { isBlockActive, isMarkActive, toggleBlock, toggleMark } from './helpers'
+import {
+    insertImage,
+    isBlockActive,
+    isMarkActive,
+    toggleBlock,
+    toggleMark,
+    uploadImageToServer,
+} from './helpers'
 import { BlockFormat, MarkFormat } from './types'
 
 const Button = ({
@@ -258,6 +266,32 @@ export const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
     return <span {...attributes}>{children}</span>
 }
 
+const InsertImageButton = () => {
+    const editor = useSlateStatic()
+    return (
+        <button type="button" className="rounded p-1">
+            <label htmlFor="insertImage" className="cursor-pointer">
+                <Image src={imageIcon} alt="insert image" className="h-5 w-5" />
+            </label>
+            <input
+                type="file"
+                id="insertImage"
+                accept="image/*"
+                className="hidden"
+                onChange={async (e) => {
+                    const { files } = e.target
+                    if (files && files?.length > 0) {
+                        const res = await uploadImageToServer(files[0])
+                        if (res?.imageUrl) {
+                            insertImage(editor, res.imageUrl)
+                        }
+                    }
+                }}
+            />
+        </button>
+    )
+}
+
 export const Toolbar = () => (
     <div className="sticky top-0 z-10 bg-white">
         <div className="flex flex-wrap items-center gap-3 border-b py-4">
@@ -351,6 +385,7 @@ export const Toolbar = () => (
                     className="h-5 w-5"
                 />
             </BlockButton>
+            <InsertImageButton />
         </div>
     </div>
 )

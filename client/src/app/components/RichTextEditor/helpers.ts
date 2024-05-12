@@ -87,7 +87,25 @@ const isImageUrl = (url: string) => {
     })
 }
 
-const insertImage = (editor: Editor, url: string) => {
+export const uploadImageToServer = async (image: File) => {
+    const data = new FormData()
+    data.append('image', image)
+    data.append('resize', JSON.stringify(false))
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/images`, {
+        method: 'POST',
+        body: data,
+        credentials: 'include',
+    })
+    if (!res.ok) {
+        toast.error('Error uploading image to server.')
+        return null
+    }
+    const { imageUrl }: { imageUrl: string } = await res.json()
+    return { imageUrl }
+}
+
+export const insertImage = (editor: Editor, url: string) => {
     const text = { text: '' }
     const image: ImageElement = { type: 'image', url, children: [text] }
     Transforms.insertNodes(editor, image)
@@ -108,25 +126,11 @@ export const withImages = (editor: Editor) => {
         if (files?.length > 0) {
             Array.from(files).forEach(async (file) => {
                 const [mime] = file.type.split('/')
-
                 if (mime === 'image') {
-                    const data = new FormData()
-                    data.append('image', file)
-                    data.append('resize', JSON.stringify(false))
-
-                    const res = await fetch(
-                        `${process.env.NEXT_PUBLIC_API_BASE_URL}/images`,
-                        {
-                            method: 'POST',
-                            body: data,
-                            credentials: 'include',
-                        }
-                    )
-                    if (!res.ok) {
-                        return toast.error('Error occurred')
+                    const res = await uploadImageToServer(file)
+                    if (res?.imageUrl) {
+                        insertImage(editor, res.imageUrl)
                     }
-                    const { imageUrl }: { imageUrl: string } = await res.json()
-                    insertImage(editor, imageUrl)
                 }
             })
         } else if (isImageUrl(text)) {
