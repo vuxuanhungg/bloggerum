@@ -1,12 +1,12 @@
 import { RenderElementProps } from 'slate-react'
+import { LinkElement as LinkElementType } from '../types'
 
 const LinkElement = ({ attributes, children, element }: RenderElementProps) => {
     return (
-        // a href doesn't work for some reason
         <a
             {...attributes}
-            href={element.url}
-            className="cursor-pointer text-green-600 underline"
+            href={(element as LinkElementType).url}
+            className="text-green-600 underline"
         >
             {children}
         </a>
