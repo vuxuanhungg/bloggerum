@@ -37,8 +37,8 @@ export const isBlockActive = (
     return !!match
 }
 
-export const isLinkActive = (editor: Editor) => {
-    const [link] = Array.from(
+export const getActiveLink = (editor: Editor) => {
+    const [node] = Array.from(
         Editor.nodes(editor, {
             match: (n) =>
                 !Editor.isEditor(n) &&
@@ -46,6 +46,13 @@ export const isLinkActive = (editor: Editor) => {
                 n.type === 'link',
         })
     )
+    if (!node) return null
+    const link = (node[0] as any).url
+    return link
+}
+
+export const isLinkActive = (editor: Editor) => {
+    const link = getActiveLink(editor)
     return !!link
 }
 
@@ -125,7 +132,7 @@ export const insertImage = (editor: Editor, url: string) => {
     })
 }
 
-const unwrapLink = (editor: Editor) => {
+export const unwrapLink = (editor: Editor) => {
     Transforms.unwrapNodes(editor, {
         match: (n) =>
             !Editor.isEditor(n) &&
