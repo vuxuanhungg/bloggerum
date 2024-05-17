@@ -46,6 +46,7 @@ type EmptyText = {
 export type ImageElement = {
     type: 'image'
     url: string
+    caption: string
     children: EmptyText[]
 }
 

@@ -124,7 +124,12 @@ export const uploadImageToServer = async (image: File) => {
 
 export const insertImage = (editor: Editor, url: string) => {
     const text = { text: '' }
-    const image: ImageElement = { type: 'image', url, children: [text] }
+    const image: ImageElement = {
+        type: 'image',
+        url,
+        caption: '',
+        children: [text],
+    }
     Transforms.insertNodes(editor, image)
     Transforms.insertNodes(editor, {
         type: 'paragraph',

@@ -6,7 +6,7 @@ const Element = (props: RenderElementProps) => {
     const { attributes, children, element } = props
 
     let style = {}
-    if (element.type !== 'image') {
+    if (element.type !== 'image' && element.type !== 'link') {
         style = { textAlign: element.align }
     }
 
@@ -60,7 +60,7 @@ const Element = (props: RenderElementProps) => {
         case 'numbered-list':
             return (
                 <ol
-                    className="mt-4 list-inside list-decimal space-y-2 pl-6"
+                    className="mt-4 list-decimal space-y-2 pl-6"
                     style={style}
                     {...attributes}
                 >
@@ -70,7 +70,7 @@ const Element = (props: RenderElementProps) => {
         case 'bulleted-list':
             return (
                 <ul
-                    className="mt-4 list-inside list-disc space-y-2 pl-6"
+                    className="mt-4 list-disc space-y-2 pl-6"
                     style={style}
                     {...attributes}
                 >
