@@ -74,7 +74,7 @@ const CreatePost = () => {
     })
 
     return (
-        <div className="container mx-auto mb-8 max-w-2xl lg:min-w-[40rem]">
+        <div className="container mx-auto mb-8 max-w-3xl lg:min-w-[40rem]">
             <form onSubmit={onSubmit}>
                 <div>
                     <TextareaAutosize
