@@ -1,12 +1,12 @@
 import { Editor } from 'slate'
-import { insertImage, isImageUrl, uploadImageToServer } from './helpers'
+import { insertImage, uploadImageToServer } from './helpers'
 
 export const withImages = (editor: Editor) => {
     const { insertData, isVoid } = editor
 
     editor.isVoid = (element) => element.type === 'image' || isVoid(element)
+
     editor.insertData = (data) => {
-        const text = data.getData('text/plain')
         const { files } = data
 
         if (files?.length > 0) {
@@ -19,12 +19,18 @@ export const withImages = (editor: Editor) => {
                     }
                 }
             })
-        } else if (isImageUrl(text)) {
-            insertImage(editor, text)
         } else {
             insertData(data)
         }
     }
+
+    return editor
+}
+
+export const withInlines = (editor: Editor) => {
+    const { isInline } = editor
+
+    editor.isInline = (element) => element.type === 'link' || isInline(element)
 
     return editor
 }

@@ -1,7 +1,19 @@
 import { TrashIcon } from '@heroicons/react/24/outline'
+import isHotkey from 'is-hotkey'
+import isUrl from 'is-url'
 import Image from 'next/image'
-import { MouseEventHandler, ReactNode } from 'react'
-import { Transforms } from 'slate'
+import {
+    LegacyRef,
+    MouseEventHandler,
+    ReactNode,
+    forwardRef,
+    useEffect,
+    useRef,
+    useState,
+} from 'react'
+import { createPortal } from 'react-dom'
+import { toast } from 'react-toastify'
+import { Editor, Range, Transforms } from 'slate'
 import {
     ReactEditor,
     RenderElementProps,
@@ -11,8 +23,10 @@ import {
     useSlate,
     useSlateStatic,
 } from 'slate-react'
+import { useLinkInputContext } from './LinkInputContext'
 import codeIcon from './assets/Code.svg'
 import imageIcon from './assets/Image.svg'
+import linkIcon from './assets/LinkSimple.svg'
 import bulletedListIcon from './assets/ListBullets.svg'
 import numberedListIcon from './assets/ListNumbers.svg'
 import paragraphIcon from './assets/Paragraph.svg'
@@ -34,6 +48,7 @@ import {
     toggleBlock,
     toggleMark,
     uploadImageToServer,
+    wrapLink,
 } from './helpers'
 import { BlockFormat, MarkFormat } from './types'
 
@@ -156,6 +171,23 @@ const ImageElement = ({
     )
 }
 
+export const LinkElement = ({
+    attributes,
+    children,
+    element,
+}: RenderElementProps) => {
+    return (
+        // a href doesn't work for some reason
+        <a
+            {...attributes}
+            href={element.url}
+            className="cursor-pointer text-green-600 underline"
+        >
+            {children}
+        </a>
+    )
+}
+
 export const Element = (props: RenderElementProps) => {
     const { attributes, children, element } = props
 
@@ -233,6 +265,8 @@ export const Element = (props: RenderElementProps) => {
             )
         case 'image':
             return <ImageElement {...props} />
+        case 'link':
+            return <LinkElement {...props} />
         default: // paragraph
             return (
                 <p
@@ -248,7 +282,7 @@ export const Element = (props: RenderElementProps) => {
 
 export const Leaf = ({ attributes, children, leaf }: RenderLeafProps) => {
     if (leaf.bold) {
-        children = <strong className="text-gray-700">{children}</strong>
+        children = <strong>{children}</strong>
     }
 
     if (leaf.italic) {
@@ -289,6 +323,113 @@ const InsertImageButton = () => {
                 }}
             />
         </button>
+    )
+}
+
+const Portal = ({ children }: { children?: ReactNode }) => {
+    return typeof document === 'object'
+        ? createPortal(children, document.body)
+        : null
+}
+
+const LinkInput = forwardRef((_props, ref: LegacyRef<HTMLDivElement>) => {
+    const editor = useSlateStatic()
+    const [url, setUrl] = useState('')
+    const { inputOpen, setInputOpen } = useLinkInputContext()
+    return (
+        <div
+            ref={ref}
+            className={`absolute left-0 top-0 z-10 rounded bg-white p-4 shadow ${inputOpen ? 'opacity-1' : 'pointer-events-none opacity-0'} text-sm`}
+        >
+            <input
+                type="text"
+                placeholder="Paste a link"
+                className="w-full rounded border-2 px-3 py-1.5 shadow-sm focus:outline-green-600"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                onFocus={() => setInputOpen(true)}
+                onBlur={() => setInputOpen(false)}
+                onKeyDown={(e) => {
+                    if (isHotkey('Enter', e)) {
+                        e.preventDefault()
+
+                        if (!isUrl(url)) {
+                            toast.warn('Invalid url')
+                            return
+                        }
+
+                        wrapLink(editor, url)
+                    }
+                }}
+            />
+        </div>
+    )
+})
+LinkInput.displayName = 'LinkInput'
+
+const InsertLinkButton = () => {
+    const { setInputOpen } = useLinkInputContext()
+    return (
+        <button
+            type="button"
+            className="rounded p-1"
+            onClick={() => setInputOpen(true)}
+        >
+            <Image src={linkIcon} alt="insert link" className="h-5 w-5" />
+        </button>
+    )
+}
+
+export const HoveringToolbar = () => {
+    const editor = useSlate()
+    const focused = useFocused()
+    const ref = useRef<HTMLDivElement | null>(null)
+    const { setInputOpen } = useLinkInputContext()
+
+    useEffect(() => {
+        const el = ref.current
+        if (!el) return
+
+        const { selection } = editor
+        if (
+            !selection ||
+            !focused ||
+            Range.isCollapsed(selection) ||
+            Editor.string(editor, selection).trim() === ''
+        ) {
+            setInputOpen(false)
+            return
+        }
+
+        // maybe can keep select the text while the input is focused
+        const domSelection = window.getSelection()!
+        const domRange = domSelection.getRangeAt(0)
+        const rect = domRange.getBoundingClientRect()
+        el.style.top = `${rect.top + window.scrollY - el.offsetHeight}px`
+        el.style.left = `${
+            rect.left + window.scrollY - el.offsetWidth / 2 + rect.width / 2
+        }px`
+
+        const checkHotKey = (e: KeyboardEvent) => {
+            if (isHotkey('mod+k', e)) {
+                e.preventDefault()
+                setInputOpen(true)
+            } else if (isHotkey('Esc', e)) {
+                e.preventDefault()
+                setInputOpen(false)
+            }
+        }
+
+        document.addEventListener('keydown', checkHotKey)
+        return () => {
+            document.removeEventListener('keydown', checkHotKey)
+        }
+    }, [editor, editor.selection, focused, setInputOpen])
+
+    return (
+        <Portal>
+            <LinkInput ref={ref} />
+        </Portal>
     )
 }
 
@@ -386,6 +527,7 @@ export const Toolbar = () => (
                 />
             </BlockButton>
             <InsertImageButton />
+            <InsertLinkButton />
         </div>
     </div>
 )

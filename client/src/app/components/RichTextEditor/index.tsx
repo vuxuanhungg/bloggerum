@@ -10,9 +10,10 @@ import {
     Slate,
     withReact,
 } from 'slate-react'
-import { Element, Leaf, Toolbar } from './components'
+import { LinkInputProvider } from './LinkInputContext'
+import { Element, HoveringToolbar, Leaf, Toolbar } from './components'
 import { toggleMark } from './helpers'
-import { withImages } from './plugins'
+import { withImages, withInlines } from './plugins'
 import { MarkFormat } from './types'
 
 const HOTKEYS: Record<string, MarkFormat> = {
@@ -40,7 +41,7 @@ const RichTextEditor = ({
         []
     )
     const editor = useMemo(
-        () => withImages(withHistory(withReact(createEditor()))),
+        () => withInlines(withImages(withHistory(withReact(createEditor())))),
         []
     )
 
@@ -77,7 +78,10 @@ const RichTextEditor = ({
                 }
             }}
         >
-            {!readOnly && <Toolbar />}
+            <LinkInputProvider>
+                {!readOnly && <Toolbar />}
+                <HoveringToolbar />
+            </LinkInputProvider>
             <div className="mt-6">
                 <Editable
                     readOnly={readOnly}

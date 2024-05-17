@@ -1,8 +1,13 @@
-import isUrl from 'is-url'
 import { toast } from 'react-toastify'
-import { Editor, Node, Element as SlateElement, Transforms } from 'slate'
+import { Editor, Node, Range, Element as SlateElement, Transforms } from 'slate'
 import { LIST_TYPES, TEXT_ALIGN_TYPES } from './constants'
-import type { BlockFormat, ImageElement, MarkFormat, TextAlign } from './types'
+import type {
+    BlockFormat,
+    ImageElement,
+    LinkElement,
+    MarkFormat,
+    TextAlign,
+} from './types'
 
 export const isMarkActive = (editor: Editor, format: MarkFormat) => {
     const marks = Editor.marks(editor)
@@ -24,11 +29,24 @@ export const isBlockActive = (
                 !Editor.isEditor(n) &&
                 SlateElement.isElement(n) &&
                 n.type !== 'image' &&
+                n.type !== 'link' &&
                 n[blockType] === format,
         })
     )
 
     return !!match
+}
+
+export const isLinkActive = (editor: Editor) => {
+    const [link] = Array.from(
+        Editor.nodes(editor, {
+            match: (n) =>
+                !Editor.isEditor(n) &&
+                SlateElement.isElement(n) &&
+                n.type === 'link',
+        })
+    )
+    return !!link
 }
 
 export const toggleMark = (editor: Editor, format: MarkFormat) => {
@@ -79,14 +97,6 @@ export const serialize = (nodes: Node[]) => {
     return nodes.map((n) => Node.string(n)).join('\n')
 }
 
-export const isImageUrl = (url: string) => {
-    if (!url) return false
-    if (!isUrl(url)) return false
-    return fetch(url, { method: 'HEAD' }).then((res) => {
-        return res.headers.get('Content-Type')?.startsWith('image')
-    })
-}
-
 export const uploadImageToServer = async (image: File) => {
     const data = new FormData()
     data.append('image', image)
@@ -113,4 +123,21 @@ export const insertImage = (editor: Editor, url: string) => {
         type: 'paragraph',
         children: [{ text: '' }],
     })
+}
+
+export const wrapLink = (editor: Editor, url: string) => {
+    const { selection } = editor
+    const isCollapsed = selection && Range.isCollapsed(selection)
+    const link: LinkElement = {
+        type: 'link',
+        url,
+        children: isCollapsed ? [{ text: url }] : [],
+    }
+
+    if (isCollapsed) {
+        Transforms.insertNodes(editor, link)
+    } else {
+        Transforms.wrapNodes(editor, link, { split: true })
+        Transforms.collapse(editor, { edge: 'end' })
+    }
 }

@@ -1,4 +1,4 @@
-import { BaseEditor } from 'slate'
+import { BaseEditor, Descendant } from 'slate'
 import { HistoryEditor } from 'slate-history'
 import { ReactEditor } from 'slate-react'
 
@@ -17,6 +17,7 @@ type CustomElement =
           align?: TextAlign
       }
     | ImageElement
+    | LinkElement
 
 type CustomText = {
     text: string
@@ -46,4 +47,10 @@ export type ImageElement = {
     type: 'image'
     url: string
     children: EmptyText[]
+}
+
+export type LinkElement = {
+    type: 'link'
+    url: string
+    children: Descendant[]
 }
