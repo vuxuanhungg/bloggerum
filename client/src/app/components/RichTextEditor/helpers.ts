@@ -125,7 +125,20 @@ export const insertImage = (editor: Editor, url: string) => {
     })
 }
 
+const unwrapLink = (editor: Editor) => {
+    Transforms.unwrapNodes(editor, {
+        match: (n) =>
+            !Editor.isEditor(n) &&
+            SlateElement.isElement(n) &&
+            n.type === 'link',
+    })
+}
+
 export const wrapLink = (editor: Editor, url: string) => {
+    if (isLinkActive(editor)) {
+        unwrapLink(editor)
+    }
+
     const { selection } = editor
     const isCollapsed = selection && Range.isCollapsed(selection)
     const link: LinkElement = {
