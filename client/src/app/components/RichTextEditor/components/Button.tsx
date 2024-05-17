@@ -8,6 +8,7 @@ import { useLinkInputContext } from '../context/LinkInputContext'
 import {
     insertImage,
     isBlockActive,
+    isLinkActive,
     isMarkActive,
     toggleBlock,
     toggleMark,
@@ -108,15 +109,16 @@ const InsertImageButton = () => {
 }
 
 const InsertLinkButton = () => {
+    const editor = useSlate()
     const { setInputOpen } = useLinkInputContext()
+
     return (
-        <button
-            type="button"
-            className="rounded p-1"
+        <Button
+            active={isLinkActive(editor)}
             onClick={() => setInputOpen(true)}
         >
             <Image src={linkIcon} alt="insert link" className="h-5 w-5" />
-        </button>
+        </Button>
     )
 }
 

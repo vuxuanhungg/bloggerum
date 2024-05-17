@@ -2,7 +2,7 @@ import isHotkey from 'is-hotkey'
 import isUrl from 'is-url'
 import { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
-import { useFocused, useSlate } from 'slate-react'
+import { useSlate } from 'slate-react'
 import Modal from '../../Modal'
 import { useLinkInputContext } from '../context/LinkInputContext'
 import { wrapLink } from '../helpers'
@@ -10,7 +10,6 @@ import { wrapLink } from '../helpers'
 const LinkInput = () => {
     const { inputOpen, setInputOpen } = useLinkInputContext()
     const editor = useSlate()
-    const focused = useFocused()
     const [url, setUrl] = useState('')
 
     useEffect(() => {
@@ -25,7 +24,7 @@ const LinkInput = () => {
         return () => {
             document.removeEventListener('keydown', checkHotKey)
         }
-    }, [editor, editor.selection, focused, setInputOpen])
+    }, [setInputOpen])
 
     return (
         <Modal isOpen={inputOpen} onClose={() => setInputOpen(false)}>
