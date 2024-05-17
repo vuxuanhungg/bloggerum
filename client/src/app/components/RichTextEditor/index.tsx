@@ -10,8 +10,11 @@ import {
     Slate,
     withReact,
 } from 'slate-react'
-import { LinkInputProvider } from './LinkInputContext'
-import { Element, HoveringToolbar, Leaf, Toolbar } from './components'
+import Element from './components/Element'
+import Leaf from './components/Leaf'
+import LinkInput from './components/LinkInput'
+import Toolbar from './components/Toolbar'
+import { LinkInputProvider } from './context/LinkInputContext'
 import { toggleMark } from './helpers'
 import { withImages, withInlines } from './plugins'
 import { MarkFormat } from './types'
@@ -80,7 +83,7 @@ const RichTextEditor = ({
         >
             <LinkInputProvider>
                 {!readOnly && <Toolbar />}
-                <HoveringToolbar />
+                <LinkInput />
             </LinkInputProvider>
             <div className="mt-6">
                 <Editable
