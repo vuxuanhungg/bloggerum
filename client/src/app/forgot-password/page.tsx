@@ -2,13 +2,12 @@
 import { InboxArrowDownIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import Spinner from '../components/Spinner'
 import { useAuthContext } from '../context/AuthContext'
 
 const ForgotPassword = () => {
-    const [messageUrl, setMessageUrl] = useState<string | null>(null)
     const {
         register,
         handleSubmit,
@@ -30,9 +29,6 @@ const ForgotPassword = () => {
         if (!res.ok) {
             throw new Error('Error occurred')
         }
-
-        const { messageUrl } = await res.json()
-        setMessageUrl(messageUrl)
     })
 
     const router = useRouter()
@@ -106,7 +102,7 @@ const ForgotPassword = () => {
                     </form>
                 </>
             )}
-            {isSubmitSuccessful && messageUrl && (
+            {isSubmitSuccessful && (
                 <div className="flex flex-col items-center gap-4">
                     <InboxArrowDownIcon className="h-8 w-8 text-gray-500" />
                     <div>
@@ -118,14 +114,6 @@ const ForgotPassword = () => {
                             password to your email.
                         </p>
                     </div>
-                    <a
-                        href={messageUrl}
-                        target="_blank"
-                        rel="noopener"
-                        className="text-green-600 underline"
-                    >
-                        Demo message
-                    </a>
                 </div>
             )}
         </div>

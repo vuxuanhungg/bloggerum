@@ -3,7 +3,7 @@ import { redis } from '../config/redis'
 import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX, __prod__ } from '../constants'
 import { uploadImage } from '../helpers/imageHelper'
 import User from '../models/userModel'
-import sendEmail from '../utils/sendEmail'
+import { resetPasswordTemplate, sendEmail } from '../utils/sendEmail'
 import uuid from '../utils/uuid'
 
 // @desc    Register user
@@ -139,12 +139,15 @@ export const forgotPassword = asyncHandler(async (req, res) => {
         3 * 24 * 60 * 60 * 1000 // 3 days
     )
 
-    const messageUrl = await sendEmail(
+    await sendEmail(
         req.body.email,
-        'Reset Password',
-        `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">Reset password</a>`
+        'Password Reset Request for Bloggerum',
+        resetPasswordTemplate(
+            user.name,
+            `${process.env.CORS_ORIGIN}/change-password/${token}`
+        )
     )
-    res.json({ messageUrl })
+    res.json({ message: 'Email sent successfully' })
 })
 
 // @desc    Change password
