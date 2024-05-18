@@ -170,16 +170,7 @@ export const changePassword = asyncHandler(async (req, res) => {
     user.password = password
     await user.save()
 
-    // Log user in after change password
-    req.session.userId = user._id.toString()
-
-    res.json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        avatar: user.avatar,
-        bio: user.bio,
-    })
+    res.json({ message: 'Password updated successfully' })
 })
 
 // @desc    Validate password

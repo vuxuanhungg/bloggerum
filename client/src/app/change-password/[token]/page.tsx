@@ -48,10 +48,8 @@ const ChangePassword = ({
             throw new Error('Server error')
         }
 
-        const updatedUser = await res.json()
-        setUser(updatedUser)
         toast.success('Password updated!')
-        router.push('/')
+        router.push('/login')
     })
 
     return (
