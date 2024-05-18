@@ -13,9 +13,7 @@ const useUrl = (editor: Editor) => {
     const activeUrl = getActiveLink(editor)
 
     useEffect(() => {
-        if (activeUrl) {
-            setUrl(activeUrl)
-        }
+        setUrl(activeUrl || '')
     }, [activeUrl])
 
     return { url, setUrl }

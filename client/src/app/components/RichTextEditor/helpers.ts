@@ -47,7 +47,7 @@ export const getActiveLink = (editor: Editor) => {
         })
     )
     if (!node) return null
-    const link = (node[0] as any).url
+    const link = (node[0] as LinkElement).url
     return link
 }
 
