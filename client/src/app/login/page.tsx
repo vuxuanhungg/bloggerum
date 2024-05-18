@@ -50,7 +50,6 @@ const Login = () => {
 
         const user: UserProps = await res.json()
         setUser(user)
-        toast.info(`Welcome back, ${user.name}!`)
         router.replace('/')
     })
 

@@ -47,7 +47,6 @@ const Register = () => {
 
         const user = await res.json()
         setUser(user)
-        toast.info(`Welcome to Bloggerum, ${user.name}!`)
         router.replace('/')
     })
 
